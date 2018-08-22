@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AIDataService aiDataService;
     private ChatView chatView;
     private User myAccount;
-    private User droidKaigiBot;
-
+    private User citBot;
+    final String ACCESS_TOKEN = "d26cfd6907fa411b9c72aea1159e8d07";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initChatView();
 
         //Language, Dialogflow Client access token
-        final LanguageConfig config = new LanguageConfig("en", "313ca9d6cb3047fc8f2a122adf2ffea9");
+        final LanguageConfig config = new LanguageConfig("en", ACCESS_TOKEN);
         initService(config);
     }
 
@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 //Update view to bot says
                 final Message receivedMessage = new Message.Builder()
-                        .setUser(droidKaigiBot)
+                        .setUser(citBot)
                         .setRightMessage(false)
                         .setMessageText(speech)
                         .build();
@@ -193,8 +193,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         myAccount = new User(myId, myName, icon);
 
         int botId = 1;
-        String botName = "DroidKaigi";
-        droidKaigiBot = new User(botId, botName, icon);
+        String botName = "CIT";
+        citBot = new User(botId, botName, icon);
 
         chatView = findViewById(R.id.chat_view);
         chatView.setRightBubbleColor(ContextCompat.getColor(this, R.color.green500));
