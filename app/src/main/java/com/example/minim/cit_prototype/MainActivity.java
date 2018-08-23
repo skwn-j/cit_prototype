@@ -2,7 +2,9 @@ package com.example.minim.cit_prototype;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +12,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.github.bassaer.chatmessageview.model.Message;
 import com.github.bassaer.chatmessageview.view.ChatView;
@@ -44,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private User myAccount;
     private User citBot;
     final String ACCESS_TOKEN = "d26cfd6907fa411b9c72aea1159e8d07";
+
+    private ListView mListView = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +60,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //Language, Dialogflow Client access token
         final LanguageConfig config = new LanguageConfig("ko", ACCESS_TOKEN);
+        final String[] items = {"MENU_1", "MENU_2"};
+        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, items);
+        mListView = (ListView) findViewById(R.id.drawer_list_main);
+        mListView.setAdapter(adapter);
         initService(config);
     }
 
@@ -99,11 +110,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String event = params[1];
             String context = params[2];
 
-            if (!TextUtils.isEmpty(query)){
+            if (!TextUtils.isEmpty(query)) {
                 request.setQuery(query);
             }
 
-            if (!TextUtils.isEmpty(event)){
+            if (!TextUtils.isEmpty(event)) {
                 request.setEvent(new AIEvent(event));
             }
 
@@ -177,17 +188,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    public static Bitmap createImage(int width, int height, int color) {
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = new Paint();
+        paint.setColor(color);
+        canvas.drawRect(0F, 0F, (float) width, (float) height, paint);
+        return bitmap;
+    }
+
     private void onError(final AIError error) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.e(TAG,error.toString());
+                Log.e(TAG, error.toString());
             }
         });
     }
 
     private void initChatView() {
-        Log.d(TAG ,"##### iniunChatView #####");
+        Log.d(TAG, "##### iniunChatView #####");
         int myId = 0;
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_user);
         String myName = "Fish";
@@ -200,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         chatView = findViewById(R.id.chat_view);
         chatView.setRightBubbleColor(ContextCompat.getColor(this, R.color.green500));
         chatView.setLeftBubbleColor(Color.WHITE);
-        chatView.setBackgroundColor(ContextCompat.getColor(this, R.color.blueGray500));
+        chatView.setBackgroundColor(ContextCompat.getColor(this, R.color.color_chat_view));
         chatView.setSendButtonColor(ContextCompat.getColor(this, R.color.lightBlue500));
         chatView.setSendIcon(R.drawable.ic_action_send);
         chatView.setRightMessageTextColor(Color.WHITE);
