@@ -1,5 +1,6 @@
 package com.example.minim.cit_prototype;
 
+import Utils.PreferencesManager;
 import ai.api.model.*;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,14 +38,17 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getName();
+
+    //For Dialogflow
     private Gson gson = GsonFactory.getGson();
     private AIDataService aiDataService;
+    final String ACCESS_TOKEN = "d26cfd6907fa411b9c72aea1159e8d07";
+    //for view
     private ChatView chatView;
+    private ListView mListView = null;
+    //for chat
     private User myAccount;
     private User citBot;
-    final String ACCESS_TOKEN = "d26cfd6907fa411b9c72aea1159e8d07";
-
-    private ListView mListView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
