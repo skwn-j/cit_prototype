@@ -34,7 +34,7 @@ import ai.api.android.GsonFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getName();
     private Gson gson = GsonFactory.getGson();
@@ -61,22 +61,84 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initService(config);
     }
 
-    @Override
-    public void onClick(View v) {
-        //new message
-        final Message message = new Message.Builder()
-                .setUser(myAccount)
-                .setRightMessage(true)
-                .setMessageText(chatView.getInputText())
-                .hideIcon(true)
-                .build();
-        //Set to chat view
-        chatView.send(message);
-        sendRequest(chatView.getInputText());
-        //Reset edit text
-        chatView.setInputText("");
-    }
+    private void initChatView() {
+        Log.d(TAG, "##### iniunChatView #####");
+        int myId = 0;
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_user);
+        String myName = "Fish";
+        myAccount = new User(myId, myName, icon);
 
+        int botId = 1;
+        String botName = "CIT";
+        citBot = new User(botId, botName, icon);
+
+        chatView = findViewById(R.id.chat_view);
+        chatView.setRightBubbleColor(ContextCompat.getColor(this, R.color.green500));
+        chatView.setLeftBubbleColor(Color.WHITE);
+        chatView.setBackgroundColor(ContextCompat.getColor(this, R.color.color_chat_view));
+        chatView.setSendButtonColor(ContextCompat.getColor(this, R.color.lightBlue500));
+        chatView.setSendIcon(R.drawable.ic_action_send);
+        chatView.setOptionIcon(R.drawable.ic_action_mic);
+        chatView.setOptionButtonColor(Color.WHITE);
+        chatView.setRightMessageTextColor(Color.WHITE);
+        chatView.setLeftMessageTextColor(Color.BLACK);
+        chatView.setUsernameTextColor(Color.WHITE);
+        chatView.setSendTimeTextColor(Color.WHITE);
+        chatView.setDateSeparatorColor(Color.WHITE);
+        chatView.setInputTextHint("뭐라고 할까요?");
+        chatView.setMessageMarginTop(5);
+        chatView.setMessageMarginBottom(5);
+
+        chatView.setOnClickSendButtonListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //new message
+                final Message message = new Message.Builder()
+                        .setUser(myAccount)
+                        .setRightMessage(true)
+                        .setMessageText(chatView.getInputText())
+                        .hideIcon(true)
+                        .build();
+                //Set to chat view
+                chatView.send(message);
+                sendRequest(chatView.getInputText());
+                //Reset edit text
+                chatView.setInputText("");
+            }
+        });
+        /* Option button is for voice recognition
+        chatView.setOnClickOptionButtonListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //new message
+                final Message message = new Message.Builder()
+                        .setUser(myAccount)
+                        .setRightMessage(true)
+                        .setMessageText(chatView.getInputText())
+                        .hideIcon(true)
+                        .build();
+                //Set to chat view
+                chatView.send(message);
+                sendRequest(chatView.getInputText());
+                //Reset edit text
+                chatView.setInputText("");
+            }
+        });
+        */
+        chatView.setOnBubbleClickListener(new Message.OnBubbleClickListener() {
+            @Override
+            public void onClick(Message message) {
+                final Message nmessage = new Message.Builder()
+                        .setUser(myAccount)
+                        .setRightMessage(true)
+                        .setMessageText("Bubble Click")
+                        .hideIcon(true)
+                        .build();
+                //Set to chat view
+                chatView.send(nmessage);
+            }
+        });
+    }
     /*
      * AIRequest should have query OR event
      */
@@ -217,35 +279,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private void initChatView() {
-        Log.d(TAG, "##### iniunChatView #####");
-        int myId = 0;
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_user);
-        String myName = "Fish";
-        myAccount = new User(myId, myName, icon);
 
-        int botId = 1;
-        String botName = "CIT";
-        citBot = new User(botId, botName, icon);
-
-        chatView = findViewById(R.id.chat_view);
-        chatView.setRightBubbleColor(ContextCompat.getColor(this, R.color.green500));
-        chatView.setLeftBubbleColor(Color.WHITE);
-        chatView.setBackgroundColor(ContextCompat.getColor(this, R.color.color_chat_view));
-        chatView.setSendButtonColor(ContextCompat.getColor(this, R.color.lightBlue500));
-        chatView.setSendIcon(R.drawable.ic_action_send);
-        chatView.setOptionIcon(R.drawable.ic_action_mic);
-        chatView.setOptionButtonColor(Color.WHITE);
-        chatView.setRightMessageTextColor(Color.WHITE);
-        chatView.setLeftMessageTextColor(Color.BLACK);
-        chatView.setUsernameTextColor(Color.WHITE);
-        chatView.setSendTimeTextColor(Color.WHITE);
-        chatView.setDateSeparatorColor(Color.WHITE);
-        chatView.setInputTextHint("뭐라고 할까요?");
-        chatView.setMessageMarginTop(5);
-        chatView.setMessageMarginBottom(5);
-        chatView.setOnClickSendButtonListener(this);
-    }
 
     private void initService(final LanguageConfig languageConfig) {
         final AIConfiguration.SupportedLanguages lang =
