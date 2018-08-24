@@ -1,5 +1,6 @@
 package com.example.minim.cit_prototype;
 
+import ai.api.model.*;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -30,14 +31,8 @@ import ai.api.RequestExtras;
 import ai.api.android.AIConfiguration;
 import ai.api.android.AIDataService;
 import ai.api.android.GsonFactory;
-import ai.api.model.AIContext;
-import ai.api.model.AIError;
-import ai.api.model.AIEvent;
-import ai.api.model.AIRequest;
-import ai.api.model.AIResponse;
-import ai.api.model.Metadata;
-import ai.api.model.Result;
-import ai.api.model.Status;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -55,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initChatView();
 
         //Language, Dialogflow Client access token
@@ -143,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void onResult(final AIResponse response) {
+    private void onResult (final AIResponse response) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -177,13 +171,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
 
-                //Update view to bot says
-                final Message receivedMessage = new Message.Builder()
-                        .setUser(citBot)
-                        .setRightMessage(false)
-                        .setMessageText(speech)
-                        .build();
-                chatView.receive(receivedMessage);
+                JSONObject job = null;
+                try {
+                    job = new JSONObject(speech);
+                }
+                catch(JSONException e) {
+                    Log.i(TAG, "Speech was String");
+                }
+
+                if(job == null) {
+                    //Response is simple String
+                    String[] sentences = speech.split("\n");
+                    //Update view to bot says
+                    for (int i = 0; i < sentences.length; i++) {
+                        final Message receivedMessage = new Message.Builder()
+                                .setUser(citBot)
+                                .setRightMessage(false)
+                                .setMessageText(sentences[i])
+                                .build();
+                        chatView.receive(receivedMessage);
+                    }
+                }
+                else {
+                    //Response is JSON
+                }
             }
         });
     }
@@ -223,12 +234,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         chatView.setBackgroundColor(ContextCompat.getColor(this, R.color.color_chat_view));
         chatView.setSendButtonColor(ContextCompat.getColor(this, R.color.lightBlue500));
         chatView.setSendIcon(R.drawable.ic_action_send);
+        chatView.setOptionIcon(R.drawable.ic_action_mic);
+        chatView.setOptionButtonColor(Color.WHITE);
         chatView.setRightMessageTextColor(Color.WHITE);
         chatView.setLeftMessageTextColor(Color.BLACK);
         chatView.setUsernameTextColor(Color.WHITE);
         chatView.setSendTimeTextColor(Color.WHITE);
         chatView.setDateSeparatorColor(Color.WHITE);
-        chatView.setInputTextHint("new message...");
+        chatView.setInputTextHint("뭐라고 할까요?");
         chatView.setMessageMarginTop(5);
         chatView.setMessageMarginBottom(5);
         chatView.setOnClickSendButtonListener(this);

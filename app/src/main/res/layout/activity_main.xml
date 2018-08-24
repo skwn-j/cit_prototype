@@ -16,7 +16,9 @@
         <com.github.bassaer.chatmessageview.view.ChatView
             android:id="@+id/chat_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            app:option_button_enable="true"
+        />
 
         <ListView
             android:id="@+id/drawer_list_main"
