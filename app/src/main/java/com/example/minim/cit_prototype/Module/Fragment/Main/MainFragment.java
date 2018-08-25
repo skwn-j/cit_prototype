@@ -1,6 +1,7 @@
 package com.example.minim.cit_prototype.Module.Fragment.Main;
 
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -12,15 +13,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListView;
 
-import com.example.minim.cit_prototype.LanguageConfig;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import com.example.minim.cit_prototype.R;
 import com.example.minim.cit_prototype.User;
 import com.github.bassaer.chatmessageview.model.Message;
@@ -36,8 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import Common.ConstVariables;
-import Utils.PreferencesManager;
 import ai.api.AIServiceException;
 import ai.api.RequestExtras;
 import ai.api.android.AIConfiguration;
@@ -54,8 +53,8 @@ import ai.api.model.Status;
 
 public class MainFragment extends Fragment {
     private final String TAG = MainFragment.class.getSimpleName();
-    final String ACCESS_TOKEN = "d26cfd6907fa411b9c72aea1159e8d07";
-
+    final String FRIEND_TOKEN = "d26cfd6907fa411b9c72aea1159e8d07";
+    final String CHILD_TOKEN = "fdf9f71121544dbf8693b645623f2aff";
     //For Dialogflow
     private Gson gson = GsonFactory.getGson();
     private AIDataService aiDataService;
@@ -78,19 +77,17 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final LanguageConfig config = new LanguageConfig("ko", ACCESS_TOKEN);
-
-        initService(config);
+        initService();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
-        initChatView(view);
+        initChatView(view, container);
         return view;
     }
 
-    private void initChatView(final View v) {
+    private void initChatView(final View v, final ViewGroup container) {
         Log.d(TAG, "##### initChatView #####");
 
         int myId = 0;
@@ -136,25 +133,35 @@ public class MainFragment extends Fragment {
                 chatView.setInputText("");
             }
         });
-        /* Option button is for voice recognition
+        // Option button is for voice recognition
         chatView.setOnClickOptionButtonListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //new message
-                final Message message = new Message.Builder()
-                        .setUser(myAccount)
-                        .setRightMessage(true)
-                        .setMessageText(chatView.getInputText())
-                        .hideIcon(true)
-                        .build();
-                //Set to chat view
-                chatView.send(message);
-                sendRequest(chatView.getInputText());
-                //Reset edit text
-                chatView.setInputText("");
+                //make popup
+                View rootView = getLayoutInflater().inflate(R.layout.popup_voice, container, false);
+                final PopupWindow popupWindow = new PopupWindow(rootView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+                popupWindow.setFocusable(true);
+                popupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
+
+                //Voice Record Button
+                Button voice = (Button) rootView.findViewById(R.id.btn_voice);
+                voice.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View vv) {
+
+                    }
+                });
+                //close button
+                Button close = (Button) rootView.findViewById(R.id.btn_close);
+                close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View vv) {
+                        popupWindow.dismiss();
+                    }
+                });
             }
         });
-        */
+
         chatView.setOnBubbleClickListener(new Message.OnBubbleClickListener() {
             @Override
             public void onClick(Message message) {
@@ -283,8 +290,10 @@ public class MainFragment extends Fragment {
                                 .build();
                         chatView.receive(receivedMessage);
                     }
-                } else {
+                }
+                else {
                     //Response is JSON
+                    //We have to make Graph with it
                 }
             }
         });
@@ -309,11 +318,21 @@ public class MainFragment extends Fragment {
     }
 
 
-    private void initService(final LanguageConfig languageConfig) {
-        final AIConfiguration.SupportedLanguages lang =
-                AIConfiguration.SupportedLanguages.fromLanguageTag(languageConfig.getLanguageCode());
-        final AIConfiguration config = new AIConfiguration(languageConfig.getAccessToken(),
-                lang,
+    private void initService() {
+        String token = FRIEND_TOKEN;
+        /*
+        int agent_type = PreferencesManager.INSTANCE.loadIntegerSharedPreferences(getActivity(), ConstVariables.Companion.getPREF_KEY_AGENT_TYPE());
+        switch(agent_type) {
+            case 1:
+                token = FRIEND_TOKEN;
+            case 2:
+                token = CHILD_TOKEN;
+            default:
+
+        }
+        */
+        AIConfiguration config = new AIConfiguration(token,
+                AIConfiguration.SupportedLanguages.fromLanguageTag("ko"),
                 AIConfiguration.RecognitionEngine.System);
         aiDataService = new AIDataService(getActivity(), config);
     }
