@@ -4,4 +4,6 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="string_training_step_1">허허 내가 조금 있다가 손주 녀석을 만나서 \n장난감을 사주기로 했다네 친구.\n그런데 내가 요즘 기억이 가물가물해서 말이야..\n나 대신 기억 좀 해줄 수 있겠나?\n\n지금부터 세가지 물건 이름을 이야기하겠네.\n끝까지 다 듣고 난 뒤 세가지 물건의 이름을\n모두 이야기해주게나. 그리고 몇 분 후에\n손주녀석을 만나면 그 세가지 물건의 이름을\n 다시 물어볼테니 나 대신 잘 기억해주게.</string>
 </resources>
