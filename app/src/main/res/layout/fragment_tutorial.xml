@@ -1,34 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/color_tutorial_bgr">
+
+    <TextView
+        android:id="@+id/txt_1_tutorial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:paddingLeft="22dp"
+        android:paddingRight="22dp"
+        android:text="함께 대화하고 싶은"
+
+        android:textColor="#FF4F4F4F"
+        android:textSize="25sp" />
+
+    <RelativeLayout
+        android:id="@+id/layout_txt_tutorial"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txt_1_tutorial"
+        android:orientation="horizontal"
+        android:paddingLeft="22dp"
+        android:paddingRight="22dp">
+
+        <TextView
+            android:id="@+id/txt_2_tutorial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AI 에이전트를"
+            android:textColor="#FF49DC90"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/txt_3_tutorial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/txt_2_tutorial"
+            android:text=" 선택해주세요"
+            android:textColor="#FF4F4F4F"
+            android:textSize="25sp" />
+
+    </RelativeLayout>
 
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="131dp"
-        android:layout_height="170dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="42dp"
-        android:layout_marginTop="180dp"
-        android:text="Button" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_txt_tutorial"
+        android:layout_marginTop="35dp"
+        android:gravity="center_horizontal"
+        android:paddingLeft="22dp"
+        android:paddingRight="22dp">
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="127dp"
-        android:layout_height="166dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/button1"
-        android:layout_marginEnd="41dp"
-        android:text="Button" />
+        <ImageView
+            android:id="@+id/button1"
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/img_egent_friend_selector" />
 
-    <Button
+        <ImageView
+            android:id="@+id/button2"
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:layout_marginStart="10dp"
+            android:layout_toRightOf="@+id/button1"
+            android:background="@drawable/img_egent_grand_son_selector" />
+    </RelativeLayout>
+
+    <ImageView
         android:id="@+id/cancel_action"
         android:layout_width="wrap_content"
-        android:layout_height="58dp"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="60dp"
-        android:text="Button" />
+        android:background="@drawable/img_bottom_selector" />
 </RelativeLayout>

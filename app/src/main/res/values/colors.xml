@@ -6,4 +6,10 @@
 
     <!-- Main -->
     <color name="color_chat_view">#FFF1F1F1</color>
+    <color name="color_tutorial_bgr">#FFF3F3F3</color>
+    <color name="color_training_bgr">#FFF3F3F3</color>
+
+    <!-- Chat -->
+    <color name="color_chat_ai">#FFFFFFFF</color>
+    <color name="color_chat_user">#FF49CD90</color>
 </resources>
