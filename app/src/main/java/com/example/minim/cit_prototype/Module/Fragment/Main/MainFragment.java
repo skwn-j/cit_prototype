@@ -148,7 +148,9 @@ public class MainFragment extends Fragment {
                 voice.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View vv) {
+                        //implement voice recording during button click
 
+                        popupWindow.dismiss();
                     }
                 });
                 //close button
@@ -165,14 +167,20 @@ public class MainFragment extends Fragment {
         chatView.setOnBubbleClickListener(new Message.OnBubbleClickListener() {
             @Override
             public void onClick(Message message) {
-                final Message nmessage = new Message.Builder()
-                        .setUser(myAccount)
-                        .setRightMessage(true)
-                        .setMessageText("Bubble Click")
-                        .hideIcon(true)
-                        .build();
-                //Set to chat view
-                chatView.send(nmessage);
+                String messageText = message.getMessageText();
+                if(messageText.contains("#")) {
+                    sendRequest(messageText.substring(1));
+                    /*
+                    final Message nmessage = new Message.Builder()
+                            .setUser(myAccount)
+                            .setRightMessage(true)
+                            .setMessageText(messageText.substring(1))
+                            .hideIcon(true)
+                            .build();
+                    //Set to chat view
+                    chatView.send(nmessage);
+                    */
+                }
             }
         });
     }
