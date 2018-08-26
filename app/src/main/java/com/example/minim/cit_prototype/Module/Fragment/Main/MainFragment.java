@@ -10,6 +10,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
+import android.speech.SpeechRecognizer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -41,10 +43,7 @@ import com.google.gson.JsonElement;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import Common.ConstVariables;
 import Utils.PreferencesManager;
@@ -62,7 +61,9 @@ import ai.api.model.Metadata;
 import ai.api.model.Result;
 import ai.api.model.Status;
 
-public class MainFragment extends Fragment implements View.OnClickListener{
+import android.speech.RecognizerIntent;
+
+public class MainFragment extends Fragment implements View.OnClickListener {
     private final String TAG = MainFragment.class.getSimpleName();
     final String FRIEND_TOKEN = "d26cfd6907fa411b9c72aea1159e8d07";
     final String CHILD_TOKEN = "fdf9f71121544dbf8693b645623f2aff";
@@ -78,8 +79,11 @@ public class MainFragment extends Fragment implements View.OnClickListener{
     //for chat
     private User myAccount;
     private User citBot;
-
     private int mCurrentAgentType;
+
+    //for voice recognizer
+    private SpeechRecognizer speechRecognizer;
+    private final int REQ_CODE_SPEECH = 100;
 
     /* Training Pager*/
     private RelativeLayout mPagerLayout;
@@ -323,13 +327,24 @@ public class MainFragment extends Fragment implements View.OnClickListener{
                     String[] sentences = speech.split("\n");
                     //Update view to bot says
                     for (int i = 0; i < sentences.length; i++) {
-                        final Message receivedMessage = new Message.Builder()
-                                .setUser(citBot)
-                                .setRightMessage(false)
-                                .setMessageText(sentences[i])
-                                .setStatus(IS_CLICKABLE_MSG)
-                                .build();
-                        chatView.receive(receivedMessage);
+                        if(sentences[i].contains("#")) {
+                            final Message receivedMessage = new Message.Builder()
+                                    .setUser(citBot)
+                                    .setRightMessage(false)
+                                    .setMessageText(sentences[i].substring(1))
+                                    .setStatus(IS_CLICKABLE_MSG)
+                                    .build();
+                            chatView.receive(receivedMessage);
+                        }
+                        else {
+                            final Message receivedMessage = new Message.Builder()
+                                    .setUser(citBot)
+                                    .setRightMessage(false)
+                                    .setMessageText(sentences[i])
+                                    .build();
+                            chatView.receive(receivedMessage);
+                        }
+
                     }
                 }
                 else {
@@ -467,5 +482,13 @@ public class MainFragment extends Fragment implements View.OnClickListener{
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
-
+/*
+    private void voiceRecognition() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.KOREAN);
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say Something");
+        
+    }
+*/
 }
