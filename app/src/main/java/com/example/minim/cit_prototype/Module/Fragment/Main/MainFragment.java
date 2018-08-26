@@ -81,10 +81,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private User citBot;
     private int mCurrentAgentType;
 
-    //for voice recognizer
-    private SpeechRecognizer speechRecognizer;
-    private final int REQ_CODE_SPEECH = 100;
-
     /* Training Pager*/
     private RelativeLayout mPagerLayout;
     private ViewPager mViewPager;
@@ -482,13 +478,4 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
-/*
-    private void voiceRecognition() {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.KOREAN);
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say Something");
-        
-    }
-*/
 }
