@@ -84,10 +84,14 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private User citBot;
     private int mCurrentAgentType;
 
-    /* Training Pager*/
-    private RelativeLayout mPagerLayout;
+    /* Test Page*/
+    private RelativeLayout mTestLayout;
     private ViewPager mViewPager;
     private ImageView[] mProgress;
+
+    /* Training Page*/
+    private RelativeLayout mTrainingLayout;
+    private ImageView[] mCard;
 
     private VoiceListener voiceListener;
 
@@ -122,7 +126,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
         mTestStartView = inflater.inflate(R.layout.layout_test_start, container, false);
         mTrainingStartView = inflater.inflate(R.layout.layout_training_start, container, false);
-        initChatView(view, container);
+        initializeUI(view, container);
         return view;
     }
 
@@ -142,10 +146,10 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void initChatView(final View v, final ViewGroup container) {
-        Log.d(TAG, "##### initChatView #####");
+    private void initializeUI(final View v, final ViewGroup container) {
+        Log.d(TAG, "##### initializeUI #####");
 
-        mPagerLayout = v.findViewById(R.id.layout_training);
+        mTestLayout = v.findViewById(R.id.layout_test);
         mViewPager = v.findViewById(R.id.viewpager_traning);
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.addOnPageChangeListener(mPagerChangeListener);
@@ -159,6 +163,22 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 , v.findViewById(R.id.progress_6)
         };
         mProgress[0].setSelected(true);
+
+        mCard = new ImageView[]{
+                v.findViewById(R.id.imageview_training_1)
+                , v.findViewById(R.id.imageview_training_2)
+                , v.findViewById(R.id.imageview_training_3)
+                , v.findViewById(R.id.imageview_training_4)
+                , v.findViewById(R.id.imageview_training_5)
+                , v.findViewById(R.id.imageview_training_6)
+                , v.findViewById(R.id.imageview_training_7)
+        };
+        int i = 0;
+        for (ImageView image : mCard) {
+            mCard[i++].setOnClickListener(this);
+        }
+
+        mTrainingLayout = v.findViewById(R.id.layout_training);
 
         int myId = 0;
         Bitmap usrIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_user);
@@ -243,10 +263,10 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(Message message) {
                 if (message.getStatus() == IS_CLICKABLE_MSG) {
-                    if(mCurrentSelectedMode == ConstVariables.Companion.getUSER_SELECT_TEST()) {
-                        setEnabledPager(true);
-                    }else if(mCurrentSelectedMode == ConstVariables.Companion.getUSER_SELECT_TRAINING()){
-
+                    if (mCurrentSelectedMode == ConstVariables.Companion.getUSER_SELECT_TEST()) {
+                        setEnableTestPage(true);
+                    } else if (mCurrentSelectedMode == ConstVariables.Companion.getUSER_SELECT_TRAINING()) {
+                        setEnableTraningPage(true);
                     }
                 } else {
                     return;
@@ -482,7 +502,21 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_test_close:
-                setEnabledPager(false);
+                setEnableTestPage(false);
+                break;
+            case R.id.imageview_training_1:
+                break;
+            case R.id.imageview_training_2:
+                break;
+            case R.id.imageview_training_3:
+                break;
+            case R.id.imageview_training_4:
+                break;
+            case R.id.imageview_training_5:
+                break;
+            case R.id.imageview_training_6:
+                break;
+            case R.id.imageview_training_7:
                 break;
         }
     }
@@ -561,15 +595,29 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
     };
 
-    private void setEnabledPager(boolean flag) {
+    private void setEnableTestPage(boolean flag) {
         Log.d(TAG, "##### setEnablePager #### flag : " + flag);
         if (flag) {
-            mPagerLayout.setVisibility(View.VISIBLE);
+            mTestLayout.setVisibility(View.VISIBLE);
+            mProgress[0].setSelected(true);
             chatView.setEnabled(false);
             hideKeyboard(getActivity());
         } else {
-            mPagerLayout.setVisibility(View.GONE);
+            mTestLayout.setVisibility(View.GONE);
             mViewPager.setCurrentItem(0);
+            int index = 0;
+            for (ImageView img : mProgress) {
+                mProgress[index++].setSelected(false);
+            }
+        }
+    }
+
+    private void setEnableTraningPage(boolean flag) {
+        Log.d(TAG, "##### setEnableTraningPage #####");
+        if (flag) {
+            mTrainingLayout.setVisibility(View.VISIBLE);
+        } else {
+
         }
     }
 
