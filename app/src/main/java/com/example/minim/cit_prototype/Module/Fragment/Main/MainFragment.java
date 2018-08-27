@@ -30,11 +30,14 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
+import com.example.minim.cit_prototype.ChartDrawer;
 import com.example.minim.cit_prototype.R;
 import com.example.minim.cit_prototype.User;
 import com.example.minim.cit_prototype.VoiceListener;
+import com.github.bassaer.chatmessageview.model.ChatUser;
 import com.github.bassaer.chatmessageview.model.Message;
 import com.github.bassaer.chatmessageview.view.ChatView;
+import com.github.mikephil.charting.charts.BarChart;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
@@ -400,7 +403,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     String[] sentences = speech.split("\n");
                     //Update view to bot says
                     for (int i = 0; i < sentences.length; i++) {
-                        Log.d(TAG, "##### onResult ##### sentences : " + sentences[i].toString());
+                        Log.d(TAG, "##### onResult ##### sentences : " + sentences[i]);
                         if (sentences[i].contains("#출발")) {
                             Bitmap clickIcon = null;
                             if (mCurrentSelectedMode == ConstVariables.Companion.getUSER_SELECT_TEST()) {
@@ -427,9 +430,22 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                         }
 
                     }
-                } else {
-                    //Response is JSON
-                    //We have to make Graph with it
+
+                }
+                else {
+                    try {
+                        /*
+                        View rootView = getView();
+                        final PopupWindow popupWindow = new PopupWindow(rootView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+                        popupWindow.setFocusable(true);
+                        popupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
+                        */
+                        ChartDrawer chartDrawer = new ChartDrawer();
+                        chartDrawer.drawBarChart(job);
+                    }
+                    catch (JSONException e){
+
+                    }
                 }
             }
         });
