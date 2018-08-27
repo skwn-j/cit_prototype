@@ -7,12 +7,12 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/layout_training_toolbar"
+        android:id="@+id/layout_test_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/txt_training_title"
+            android:id="@+id/txt_test_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -22,7 +22,7 @@
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/btn_traning_close"
+            android:id="@+id/btn_test_close"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignParentEnd="true"
@@ -35,7 +35,7 @@
         android:layout_marginTop="45dp"
         android:gravity="center_horizontal"
         android:lineSpacingExtra="8dp"
-        android:text="@string/string_training_step_1"
+        android:text="@string/string_test_step_1"
         android:textColor="#FF4F4F4F"
         android:textSize="15sp" />
 

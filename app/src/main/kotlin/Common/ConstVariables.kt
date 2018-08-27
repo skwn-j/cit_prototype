@@ -20,5 +20,11 @@ class ConstVariables {
         val EVENTBUS_TRAINING_START = 101
         val EVENTBUS_INPUT_VOICE_START = 102
         val EVENTBUS_INPUT_VOICE_DONE = 103
+
+        /*
+        * User Mode
+        * */
+        val USER_SELECT_TRAINING = 200
+        val USER_SELECT_TEST = 201
     }
 }

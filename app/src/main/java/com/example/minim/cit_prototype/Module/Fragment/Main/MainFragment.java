@@ -3,7 +3,6 @@ package com.example.minim.cit_prototype.Module.Fragment.Main;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,8 +11,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.speech.RecognitionListener;
-import android.speech.SpeechRecognizer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -21,18 +18,15 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
@@ -49,7 +43,10 @@ import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import Common.CommonEventBusObject;
 import Common.ConstVariables;
@@ -68,9 +65,6 @@ import ai.api.model.AIResponse;
 import ai.api.model.Metadata;
 import ai.api.model.Result;
 import ai.api.model.Status;
-import srjhlab.com.myownbarcode.Dialog.ScreenCaptureDialog;
-
-import android.speech.RecognizerIntent;
 
 public class MainFragment extends Fragment implements View.OnClickListener {
     private final String TAG = MainFragment.class.getSimpleName();
@@ -93,8 +87,17 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     /* Training Pager*/
     private RelativeLayout mPagerLayout;
     private ViewPager mViewPager;
+    private ImageView[] mProgress;
 
     private VoiceListener voiceListener;
+
+    private View mTestStartView;
+    private Bitmap mTestStartImage;
+    private View mTrainingStartView;
+    private Bitmap mTrainingStartImage;
+
+    //User Mode
+    private int mCurrentSelectedMode = ConstVariables.Companion.getUSER_SELECT_TRAINING();
 
     public MainFragment() {
         // Required empty public constructor
@@ -117,8 +120,18 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
+        mTestStartView = inflater.inflate(R.layout.layout_test_start, container, false);
+        mTrainingStartView = inflater.inflate(R.layout.layout_training_start, container, false);
         initChatView(view, container);
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mTestStartImage = CommonUtils.Companion.viewToBitmap(getActivity(), mTestStartView
+                .findViewById(R.id.layout_test_start));
+        mTrainingStartImage = CommonUtils.Companion.viewToBitmap(getActivity(), mTrainingStartView.findViewById(R.id.layout_traiining_start));
     }
 
     @Override
@@ -135,6 +148,17 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         mPagerLayout = v.findViewById(R.id.layout_training);
         mViewPager = v.findViewById(R.id.viewpager_traning);
         mViewPager.setAdapter(mPagerAdapter);
+        mViewPager.addOnPageChangeListener(mPagerChangeListener);
+
+        mProgress = new ImageView[]{
+                v.findViewById(R.id.progress_1)
+                , v.findViewById(R.id.progress_2)
+                , v.findViewById(R.id.progress_3)
+                , v.findViewById(R.id.progress_4)
+                , v.findViewById(R.id.progress_5)
+                , v.findViewById(R.id.progress_6)
+        };
+        mProgress[0].setSelected(true);
 
         int myId = 0;
         Bitmap usrIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_user);
@@ -143,9 +167,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         int botId = 1;
         Bitmap agentIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_user);
-        if(mCurrentAgentType == ConstVariables.Companion.getPREF_AGENT_TYPE_FRIEND()){
+        if (mCurrentAgentType == ConstVariables.Companion.getPREF_AGENT_TYPE_FRIEND()) {
             agentIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_bot_1_n);
-        }else if(mCurrentAgentType == ConstVariables.Companion.getPREF_AGENT_TYPE_GRAND_CHILD()){
+        } else if (mCurrentAgentType == ConstVariables.Companion.getPREF_AGENT_TYPE_GRAND_CHILD()) {
             agentIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_bot_2_n);
         }
         String botName = "CIT";
@@ -183,6 +207,13 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 //new message
+                if (chatView.getInputText() != null) {
+                    if ("트레이닝".equals(chatView.getInputText())) {
+                        mCurrentSelectedMode = ConstVariables.Companion.getUSER_SELECT_TRAINING();
+                    } else if ("검사".equals(chatView.getInputText())) {
+                        mCurrentSelectedMode = ConstVariables.Companion.getUSER_SELECT_TEST();
+                    }
+                }
                 final Message message = new Message.Builder()
                         .setUser(myAccount)
                         .setRightMessage(true)
@@ -202,8 +233,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, 1);
-                }
-                else {
+                } else {
                     openVoiceListener(container);
                 }
             }
@@ -212,9 +242,13 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         chatView.setOnBubbleClickListener(new Message.OnBubbleClickListener() {
             @Override
             public void onClick(Message message) {
-                if(message.getStatus() == IS_CLICKABLE_MSG){
-                    setEnabledPager(true);
-                }else{
+                if (message.getStatus() == IS_CLICKABLE_MSG) {
+                    if(mCurrentSelectedMode == ConstVariables.Companion.getUSER_SELECT_TEST()) {
+                        setEnabledPager(true);
+                    }else if(mCurrentSelectedMode == ConstVariables.Companion.getUSER_SELECT_TRAINING()){
+
+                    }
+                } else {
                     return;
                 }
             }
@@ -233,16 +267,19 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         voice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vv) {
-                if (!vv.isSelected()) {
-                    vv.setSelected(true);
-                    vv.setTooltipText("Listening");
-                    //start listening
-                    voiceListener.startListening();
-                } else {
-                    vv.setSelected(false);
-                    String input = voiceListener.stopListening();
-                    popupWindow.dismiss();
-
+                //start listening
+                voiceListener.startListening();
+            }
+        });
+        //close button
+        Button close = (Button) rootView.findViewById(R.id.btn_test_close);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View vv) {
+                //Stop listening and get result;
+                String input = voiceListener.stopListening();
+                popupWindow.dismiss();
+                if (input != null) {
                     //Show message on chatview
                     final Message message = new Message.Builder()
                             .setUser(myAccount)
@@ -363,21 +400,24 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     String[] sentences = speech.split("\n");
                     //Update view to bot says
                     for (int i = 0; i < sentences.length; i++) {
-                        if(sentences[i].contains("#")) {
-                            Bitmap agentIcon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_test_n);
+                        Log.d(TAG, "##### onResult ##### sentences : " + sentences[i].toString());
+                        if (sentences[i].contains("#출발")) {
+                            Bitmap clickIcon = null;
+                            if (mCurrentSelectedMode == ConstVariables.Companion.getUSER_SELECT_TEST()) {
+                                clickIcon = mTestStartImage;
+                            } else if (mCurrentSelectedMode == ConstVariables.Companion.getUSER_SELECT_TRAINING()) {
+                                clickIcon = mTrainingStartImage;
+                            }
                             final Message receivedMessage = new Message.Builder()
                                     .setUser(citBot)
                                     .setRightMessage(false)
-                                    .setMessageText(sentences[i].substring(1))
-                                    .setPicture(agentIcon)
+                                    //.setMessageText(sentences[i].substring(1))
+                                    .setPicture(clickIcon)
                                     .setType(Message.Type.PICTURE)
                                     .setStatus(IS_CLICKABLE_MSG)
                                     .build();
-                            //ScreenCaptureDialog dialog = new ScreenCaptureDialog();
-                            //dialog.show(getActivity().getFragmentManager(), MainFragment.class.getSimpleName());
                             chatView.receive(receivedMessage);
-                        }
-                        else {
+                        } else {
                             final Message receivedMessage = new Message.Builder()
                                     .setUser(citBot)
                                     .setRightMessage(false)
@@ -387,8 +427,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                         }
 
                     }
-                }
-                else {
+                } else {
                     //Response is JSON
                     //We have to make Graph with it
                 }
@@ -417,9 +456,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     private void initService(int type) {
         String token = FRIEND_TOKEN;
-        if(type == ConstVariables.Companion.getPREF_AGENT_TYPE_FRIEND()){
+        if (type == ConstVariables.Companion.getPREF_AGENT_TYPE_FRIEND()) {
             token = FRIEND_TOKEN;
-        }else if(type == ConstVariables.Companion.getPREF_AGENT_TYPE_GRAND_CHILD()){
+        } else if (type == ConstVariables.Companion.getPREF_AGENT_TYPE_GRAND_CHILD()) {
             token = CHILD_TOKEN;
         }
         /*
@@ -441,8 +480,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.btn_traning_close:
+        switch (view.getId()) {
+            case R.id.btn_test_close:
                 setEnabledPager(false);
                 break;
         }
@@ -456,30 +495,30 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         @NonNull
         @Override
         public Object instantiateItem(@NonNull ViewGroup container, int position) {
-            layoutInflater=(LayoutInflater) getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
-            View view = layoutInflater.inflate(R.layout.layout_pager_training_step_1, container, false);
+            layoutInflater = (LayoutInflater) getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
+            View view = layoutInflater.inflate(R.layout.layout_pager_test_step_1, container, false);
 
             switch (position) {
                 case 0:
-                    view = layoutInflater.inflate(R.layout.layout_pager_training_step_1, container, false);
+                    view = layoutInflater.inflate(R.layout.layout_pager_test_step_1, container, false);
                     break;
                 case 1:
-                    view = layoutInflater.inflate(R.layout.layout_pager_training_step_2, container, false);
+                    view = layoutInflater.inflate(R.layout.layout_pager_test_step_2, container, false);
                     break;
                 case 2:
-                    view = layoutInflater.inflate(R.layout.layout_pager_training_step_3, container, false);
+                    view = layoutInflater.inflate(R.layout.layout_pager_test_step_3, container, false);
                     break;
                 case 3:
-                    view = layoutInflater.inflate(R.layout.layout_pager_training_step_4, container, false);
+                    view = layoutInflater.inflate(R.layout.layout_pager_test_step_4, container, false);
                     break;
                 case 4:
-                    view = layoutInflater.inflate(R.layout.layout_pager_training_step_5, container, false);
+                    view = layoutInflater.inflate(R.layout.layout_pager_test_step_5, container, false);
                     break;
                 case 5:
-                    view = layoutInflater.inflate(R.layout.layout_pager_training_step_6, container, false);
+                    view = layoutInflater.inflate(R.layout.layout_pager_test_step_6, container, false);
                     break;
             }
-            closeButton = view.findViewById(R.id.btn_traning_close);
+            closeButton = view.findViewById(R.id.btn_test_close);
             closeButton.setOnClickListener(MainFragment.this);
             container.addView(view);
             return view;
@@ -502,20 +541,39 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
 
     };
+    private ViewPager.OnPageChangeListener mPagerChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int i, float v, int i1) {
 
-    private void setEnabledPager(boolean flag){
+        }
+
+        @Override
+        public void onPageSelected(int i) {
+            mProgress[i].setSelected(true);
+            if ((i + 1) < mProgress.length) {
+                mProgress[i + 1].setSelected(false);
+            }
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int i) {
+
+        }
+    };
+
+    private void setEnabledPager(boolean flag) {
         Log.d(TAG, "##### setEnablePager #### flag : " + flag);
-        if(flag){
+        if (flag) {
             mPagerLayout.setVisibility(View.VISIBLE);
             chatView.setEnabled(false);
             hideKeyboard(getActivity());
-        }else{
+        } else {
             mPagerLayout.setVisibility(View.GONE);
             mViewPager.setCurrentItem(0);
         }
     }
 
-    private  void hideKeyboard(Activity activity) {
+    private void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         View view = activity.getCurrentFocus();
         if (view == null) {
@@ -525,21 +583,21 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     /*
-    * EventBus Receve
-    * */
+     * EventBus Receve
+     * */
 
     @Subscribe
-    public void onEvent(CommonEventBusObject obj){
+    public void onEvent(CommonEventBusObject obj) {
         Log.d(TAG, "##### onEvent ####");
-        if(obj.getType() == ConstVariables.Companion.getEVENTBUS_TRAINING_START()){
-            Bitmap bitmap = (Bitmap)obj.getValue();
+        if (obj.getType() == ConstVariables.Companion.getEVENTBUS_TRAINING_START()) {
+            Bitmap bitmap = (Bitmap) obj.getValue();
             final Message receivedMessage = new Message.Builder()
                     .setUser(citBot)
                     .setRightMessage(false)
                     .setPicture(bitmap)
                     .setStatus(IS_CLICKABLE_MSG)
                     .build();
-            if(chatView != null){
+            if (chatView != null) {
                 chatView.receive(receivedMessage);
             }
         }
