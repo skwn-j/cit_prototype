@@ -2,13 +2,11 @@ package com.example.minim.cit_prototype;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
-
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -41,7 +39,7 @@ public class VoiceListener implements RecognitionListener {
     }
 
     public String stopListening() {
-        if(speechRecognizer != null && voiceInput != null) {
+        if(speechRecognizer != null) {
             Log.d(TAG, "stopListening");
             speechRecognizer.stopListening();
             return voiceInput.get(0);

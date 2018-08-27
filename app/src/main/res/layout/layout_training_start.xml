@@ -7,9 +7,9 @@
         android:id="@+id/layout_traiining_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="30dp"
         android:background="@drawable/training_bg"
         android:gravity="center"
-        android:layout_margin="30dp"
         android:orientation="vertical">
 
         <TextView
@@ -17,12 +17,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
             android:gravity="left"
             android:lineSpacingExtra="13sp"
             android:text="@string/string_training_start"
             android:textColor="#4f4f4f"
-            android:layout_marginTop="30dp"
-            android:textSize="15sp" />
+            android:textSize="20sp" />
 
         <ImageView
             android:id="@+id/imageview_dialog_addimage"
@@ -30,8 +30,8 @@
             android:layout_height="54dp"
             android:layout_below="@+id/text_dialog_addimage"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/btn_test_n" />
     </RelativeLayout>
 </RelativeLayout>
