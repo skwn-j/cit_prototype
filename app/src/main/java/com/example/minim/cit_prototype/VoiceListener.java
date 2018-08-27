@@ -41,7 +41,7 @@ public class VoiceListener implements RecognitionListener {
     }
 
     public String stopListening() {
-        if(speechRecognizer != null) {
+        if(speechRecognizer != null && voiceInput != null) {
             Log.d(TAG, "stopListening");
             speechRecognizer.stopListening();
             return voiceInput.get(0);

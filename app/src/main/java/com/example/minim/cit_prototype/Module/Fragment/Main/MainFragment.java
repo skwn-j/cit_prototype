@@ -233,19 +233,16 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         voice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vv) {
-                //start listening
-                voiceListener.startListening();
-            }
-        });
-        //close button
-        Button close = (Button) rootView.findViewById(R.id.btn_close);
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View vv) {
-                //Stop listening and get result;
-                String input = voiceListener.stopListening();
-                popupWindow.dismiss();
-                if(input != null) {
+                if (!vv.isSelected()) {
+                    vv.setSelected(true);
+                    vv.setTooltipText("Listening");
+                    //start listening
+                    voiceListener.startListening();
+                } else {
+                    vv.setSelected(false);
+                    String input = voiceListener.stopListening();
+                    popupWindow.dismiss();
+
                     //Show message on chatview
                     final Message message = new Message.Builder()
                             .setUser(myAccount)
