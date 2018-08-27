@@ -1,6 +1,7 @@
 package com.example.minim.cit_prototype;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.speech.SpeechRecognizer;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class VoiceListener implements RecognitionListener {
@@ -17,11 +19,12 @@ public class VoiceListener implements RecognitionListener {
     private final String TAG = com.example.minim.cit_prototype.VoiceListener.class.getSimpleName();
     private Intent intentSpeech;
     private SpeechRecognizer speechRecognizer;
-    private String result;
+    private ArrayList<String> voiceInput;
+    private Activity activity;
 
-
-    public VoiceListener(Context context) {
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
+    public VoiceListener(Activity activity) {
+        this.activity = activity;
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(activity);
         speechRecognizer.setRecognitionListener(this);
         intentSpeech = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intentSpeech.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -38,10 +41,10 @@ public class VoiceListener implements RecognitionListener {
     }
 
     public String stopListening() {
-        if(intentSpeech != null && speechRecognizer != null) {
+        if(speechRecognizer != null) {
             Log.d(TAG, "stopListening");
             speechRecognizer.stopListening();
-            return result;
+            return voiceInput.get(0);
         }
         else {
             return "Try again!";
@@ -83,7 +86,7 @@ public class VoiceListener implements RecognitionListener {
     @Override
     public void onResults(Bundle results) {
         Log.d(TAG, "onResults");
-        result = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION).get(0);
+        voiceInput = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
     }
 
     @Override
@@ -95,6 +98,5 @@ public class VoiceListener implements RecognitionListener {
     @Override
     public void onEvent(int eventType, Bundle params) {
         Log.d(TAG, "onEvent");
-
     }
 }
