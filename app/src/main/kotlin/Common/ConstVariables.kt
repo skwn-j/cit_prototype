@@ -8,7 +8,7 @@ class ConstVariables {
         * */
         val USER_IS_LOGINED = false
 
-        val PREF_KEY_AGENT_TYPE = "preferences_agent_typa"
+        val PREF_KEY_AGENT_TYPE = "preferences_agent_type"
         val PREF_AGENT_TYPE_NONE = 0
         val PREF_AGENT_TYPE_FRIEND = 1
         val PREF_AGENT_TYPE_GRAND_CHILD = 2
@@ -18,5 +18,7 @@ class ConstVariables {
         * */
         val EVENTBUS_TYPE_TUTORIAL_DONE = 100
         val EVENTBUS_TRAINING_START = 101
+        val EVENTBUS_INPUT_VOICE_START = 102
+        val EVENTBUS_INPUT_VOICE_DONE = 103
     }
 }

@@ -73,7 +73,8 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.replace(mContentView.getId(), tutorialFragment, "main");
                 fragmentTransaction.show(tutorialFragment);
             }
-        } else {
+        }
+        else {
             if (fragment == null) {
                 MainFragment mainFragment = MainFragment.newInstance();
                 fragmentTransaction.add(mContentView.getId(), mainFragment, "main");

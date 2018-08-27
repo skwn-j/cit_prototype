@@ -35,6 +35,7 @@ import android.widget.RelativeLayout;
 
 import com.example.minim.cit_prototype.R;
 import com.example.minim.cit_prototype.User;
+import com.example.minim.cit_prototype.VoiceListener;
 import com.github.bassaer.chatmessageview.model.Message;
 import com.github.bassaer.chatmessageview.view.ChatView;
 import com.google.gson.Gson;
@@ -90,6 +91,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout mPagerLayout;
     private ViewPager mViewPager;
 
+    private VoiceListener voiceListener;
+
     public MainFragment() {
         // Required empty public constructor
     }
@@ -102,7 +105,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        voiceListener = new VoiceListener(getContext());
         mCurrentAgentType = PreferencesManager.INSTANCE.loadIntegerSharedPreferences(getActivity(), ConstVariables.Companion.getPREF_KEY_AGENT_TYPE());
         initService(mCurrentAgentType);
         EventBus.getDefault().register(this);
@@ -200,12 +203,14 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 popupWindow.setFocusable(true);
                 popupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
 
+                //TODO: Have to fix this popup page to bigger page with images included.
                 //Voice Record Button
                 Button voice = (Button) rootView.findViewById(R.id.btn_voice);
                 voice.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View vv) {
-
+                        //start listening
+                        voiceListener.startListening();
                     }
                 });
                 //close button
@@ -213,7 +218,18 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 close.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View vv) {
+                        //Stop listening and get result;
+                        String input = voiceListener.stopListening();
                         popupWindow.dismiss();
+                        //Show message on chatview
+                        final Message message = new Message.Builder()
+                                .setUser(myAccount)
+                                .setRightMessage(true)
+                                .setMessageText(input)
+                                .hideIcon(true)
+                                .build();
+                        //Set to chat view
+                        chatView.send(message);
                     }
                 });
             }
