@@ -85,7 +85,7 @@
         android:layout_height="700dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:background="@color/color_training_bgr"
+        android:background="@android:color/white"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -102,7 +102,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="70dp">
 
                     <ImageView
                         android:id="@+id/imageview_training_1"
@@ -181,6 +182,32 @@
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
+        <RelativeLayout
+            android:layout_width="332dp"
+            android:layout_height="70dp"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/white">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center_horizontal"
+                android:letterSpacing="0.05"
+                android:lineSpacingExtra="28sp"
+                android:text="트레이닝 선택"
+                android:textColor="#49dc90"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/btn_training_close"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/img_close_selector" />
+        </RelativeLayout>
 
     </RelativeLayout>
 

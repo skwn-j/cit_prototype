@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -95,6 +96,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     /* Training Page*/
     private RelativeLayout mTrainingLayout;
     private ImageView[] mCard;
+    private ImageView mCloseButton;
 
     private VoiceListener voiceListener;
 
@@ -176,6 +178,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 , v.findViewById(R.id.imageview_training_6)
                 , v.findViewById(R.id.imageview_training_7)
         };
+        mCloseButton = v.findViewById(R.id.btn_training_close);
+        mCloseButton.setOnClickListener(MainFragment.this);
+
         int i = 0;
         for (ImageView image : mCard) {
             mCard[i++].setOnClickListener(this);
@@ -520,6 +525,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             case R.id.btn_test_close:
                 setEnableTestPage(false);
                 break;
+            case R.id.btn_training_close:
+                setEnableTraningPage(false);
+                break;
             case R.id.imageview_training_1:
                 break;
             case R.id.imageview_training_2:
@@ -633,7 +641,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         if (flag) {
             mTrainingLayout.setVisibility(View.VISIBLE);
         } else {
-
+            mTrainingLayout.setVisibility(View.GONE);
         }
     }
 
