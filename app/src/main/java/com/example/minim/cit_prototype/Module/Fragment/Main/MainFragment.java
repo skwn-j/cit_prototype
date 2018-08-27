@@ -36,11 +36,14 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
+import com.example.minim.cit_prototype.ChartDrawer;
 import com.example.minim.cit_prototype.R;
 import com.example.minim.cit_prototype.User;
 import com.example.minim.cit_prototype.VoiceListener;
+import com.github.bassaer.chatmessageview.model.ChatUser;
 import com.github.bassaer.chatmessageview.model.Message;
 import com.github.bassaer.chatmessageview.view.ChatView;
+import com.github.mikephil.charting.charts.BarChart;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
@@ -389,8 +392,19 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     }
                 }
                 else {
-                    //Response is JSON
-                    //We have to make Graph with it
+                    try {
+                        /*
+                        View rootView = getView();
+                        final PopupWindow popupWindow = new PopupWindow(rootView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+                        popupWindow.setFocusable(true);
+                        popupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
+                        */
+                        ChartDrawer chartDrawer = new ChartDrawer();
+                        chartDrawer.drawBarChart(job);
+                    }
+                    catch (JSONException e){
+
+                    }
                 }
             }
         });
@@ -508,7 +522,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         if(flag){
             mPagerLayout.setVisibility(View.VISIBLE);
             chatView.setEnabled(false);
-            hideKeyboard(getActivity());
+            //hideKeyboard(getActivity());
         }else{
             mPagerLayout.setVisibility(View.GONE);
             mViewPager.setCurrentItem(0);
