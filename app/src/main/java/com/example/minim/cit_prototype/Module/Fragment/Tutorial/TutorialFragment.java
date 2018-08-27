@@ -98,7 +98,7 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
         } else if (type == ConstVariables.Companion.getPREF_AGENT_TYPE_GRAND_CHILD()) {
             PreferencesManager.INSTANCE.saveIntegerPreferencesco(getActivity(), ConstVariables.Companion.getPREF_KEY_AGENT_TYPE(), ConstVariables.Companion.getPREF_AGENT_TYPE_FRIEND());
         }
-        EventBus.getDefault().post(new CommonEventBusObject(ConstVariables.Companion.getEVENTBUS_TYPE_TUTORIAL_DONE()));
+        EventBus.getDefault().post(new CommonEventBusObject(ConstVariables.Companion.getEVENTBUS_TYPE_TUTORIAL_DONE(), 1));
     }
 
 }

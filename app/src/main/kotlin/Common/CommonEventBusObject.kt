@@ -1,5 +1,8 @@
 package Common
 
-class CommonEventBusObject(type : Int){
+import java.util.*
+
+class CommonEventBusObject(type : Int, value : Object){
     var type = type
+    var value = value
 }

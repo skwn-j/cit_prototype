@@ -40,12 +40,16 @@ import com.github.bassaer.chatmessageview.view.ChatView;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
 
+import Common.CommonEventBusObject;
 import Common.ConstVariables;
+import Common.Utils.CommonUtils;
 import Utils.PreferencesManager;
 import ai.api.AIServiceException;
 import ai.api.RequestExtras;
@@ -60,6 +64,7 @@ import ai.api.model.AIResponse;
 import ai.api.model.Metadata;
 import ai.api.model.Result;
 import ai.api.model.Status;
+import srjhlab.com.myownbarcode.Dialog.ScreenCaptureDialog;
 
 import android.speech.RecognizerIntent;
 
@@ -100,6 +105,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         mCurrentAgentType = PreferencesManager.INSTANCE.loadIntegerSharedPreferences(getActivity(), ConstVariables.Companion.getPREF_KEY_AGENT_TYPE());
         initService(mCurrentAgentType);
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -107,6 +113,14 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
         initChatView(view, container);
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     private void initChatView(final View v, final ViewGroup container) {
@@ -324,12 +338,17 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     //Update view to bot says
                     for (int i = 0; i < sentences.length; i++) {
                         if(sentences[i].contains("#")) {
+                            Bitmap agentIcon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_test_n);
                             final Message receivedMessage = new Message.Builder()
                                     .setUser(citBot)
                                     .setRightMessage(false)
                                     .setMessageText(sentences[i].substring(1))
+                                    .setPicture(agentIcon)
+                                    .setType(Message.Type.PICTURE)
                                     .setStatus(IS_CLICKABLE_MSG)
                                     .build();
+                            //ScreenCaptureDialog dialog = new ScreenCaptureDialog();
+                            //dialog.show(getActivity().getFragmentManager(), MainFragment.class.getSimpleName());
                             chatView.receive(receivedMessage);
                         }
                         else {
@@ -477,5 +496,26 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             view = new View(activity);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    /*
+    * EventBus Receve
+    * */
+
+    @Subscribe
+    public void onEvent(CommonEventBusObject obj){
+        Log.d(TAG, "##### onEvent ####");
+        if(obj.getType() == ConstVariables.Companion.getEVENTBUS_TRAINING_START()){
+            Bitmap bitmap = (Bitmap)obj.getValue();
+            final Message receivedMessage = new Message.Builder()
+                    .setUser(citBot)
+                    .setRightMessage(false)
+                    .setPicture(bitmap)
+                    .setStatus(IS_CLICKABLE_MSG)
+                    .build();
+            if(chatView != null){
+                chatView.receive(receivedMessage);
+            }
+        }
     }
 }

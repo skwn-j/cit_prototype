@@ -66,56 +66,56 @@ public class VoiceFragment extends Fragment implements View.OnClickListener, Rec
     @Override
     public void onReadyForSpeech(Bundle params) {
         Log.d(TAG, "onReadyForSpeech");
-        mainBinding.textViewSpeechStatus.setText("onReadyForSpeech");
+        //mainBinding.textViewSpeechStatus.setText("onReadyForSpeech");
     }
 
     @Override
     public void onBeginningOfSpeech() {
         Log.d(TAG, "onBeginningOfSpeech");
-        mainBinding.textViewSpeechStatus.setText("onBeginningOfSpeech");
+       // mainBinding.textViewSpeechStatus.setText("onBeginningOfSpeech");
     }
 
     @Override
     public void onRmsChanged(float rmsdB) {
         Log.d(TAG, "onRmsChanged");
-        mainBinding.textViewSpeechStatus.setText("onRmsChanged");
+      //  mainBinding.textViewSpeechStatus.setText("onRmsChanged");
     }
 
     @Override
     public void onBufferReceived(byte[] buffer) {
         Log.d(TAG, "onBufferReceived");
-        mainBinding.textViewSpeechStatus.setText("onBufferReceived");
+      //  mainBinding.textViewSpeechStatus.setText("onBufferReceived");
     }
 
     @Override
     public void onEndOfSpeech() {
         Log.d(TAG, "onEndOfSpeech");
-        stopCustomSTT();
-        mainBinding.textViewSpeechStatus.setText("onEndOfSpeech");
+        //stopCustomSTT();
+      //  mainBinding.textViewSpeechStatus.setText("onEndOfSpeech");
     }
 
     @Override
     public void onError(int error) {
         Log.d(TAG, "onError");
-        mainBinding.textViewSpeechStatus.setText("onError");
+       // mainBinding.textViewSpeechStatus.setText("onError");
     }
 
     @Override
     public void onResults(Bundle results) {
         Log.d(TAG, "onResults");
-        mainBinding.textViewSpeechResult.setText(results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION).get(0));
+       // mainBinding.textViewSpeechResult.setText(results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION).get(0));
     }
 
     @Override
     public void onPartialResults(Bundle partialResults) {
         Log.d(TAG, "onPartialResults");
-        mainBinding.textViewSpeechStatus.setText("onPartialResults");
+       // mainBinding.textViewSpeechStatus.setText("onPartialResults");
     }
 
     @Override
     public void onEvent(int eventType, Bundle params) {
         Log.d(TAG, "onEvent");
-        mainBinding.textViewSpeechStatus.setText("onEvent");
+        //mainBinding.textViewSpeechStatus.setText("onEvent");
     }
 
 }

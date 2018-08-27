@@ -17,5 +17,6 @@ class ConstVariables {
         * Evnetbus type variables
         * */
         val EVENTBUS_TYPE_TUTORIAL_DONE = 100
+        val EVENTBUS_TRAINING_START = 101
     }
 }
