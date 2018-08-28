@@ -47,7 +47,6 @@ public class VoiceListener implements RecognitionListener {
         if(speechRecognizer != null && voiceInput != null) {
             Log.d(TAG, "stopListening");
             speechRecognizer.stopListening();
-            EventBus.getDefault().post(new CommonEventBusObject(ConstVariables.Companion.getEVENTBUS_INPUT_VOICE_DONE(), voiceInput.get(0)));
             return voiceInput.get(0);
         }
         else {
@@ -91,6 +90,7 @@ public class VoiceListener implements RecognitionListener {
     public void onResults(Bundle results) {
         Log.d(TAG, "onResults");
         voiceInput = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+        EventBus.getDefault().post(new CommonEventBusObject(ConstVariables.Companion.getEVENTBUS_INPUT_VOICE_DONE(), voiceInput.get(0)));
     }
 
     @Override
