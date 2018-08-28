@@ -9,8 +9,13 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Locale;
+
+import Common.CommonEventBusObject;
+import Common.ConstVariables;
 
 public class VoiceListener implements RecognitionListener {
 
@@ -42,6 +47,7 @@ public class VoiceListener implements RecognitionListener {
         if(speechRecognizer != null && voiceInput != null) {
             Log.d(TAG, "stopListening");
             speechRecognizer.stopListening();
+            EventBus.getDefault().post(new CommonEventBusObject(ConstVariables.Companion.getEVENTBUS_INPUT_VOICE_DONE(), voiceInput.get(0)));
             return voiceInput.get(0);
         }
         else {

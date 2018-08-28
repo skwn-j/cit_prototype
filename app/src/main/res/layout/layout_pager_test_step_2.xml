@@ -32,44 +32,23 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="100dp"
         android:gravity="center_horizontal"
         android:lineSpacingExtra="8dp"
-        android:text="@string/string_test_step_1"
+        android:text="지금 말한 이 단어가 맞는가?"
         android:textColor="#FF4F4F4F"
-        android:textSize="15sp" />
+        android:textSize="20sp" />
 
     <TextView
+        android:id="@+id/text_input_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="38dp"
         android:lineSpacingExtra="-24sp"
-        android:text="나무 자동차 모자"
         android:textColor="#49dc90"
-        android:textSize="26sp" />
+        android:textSize="30sp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:gravity="center_horizontal"
-        android:lineSpacingExtra="-13sp"
-        android:text="음성으로만 제공"
-        android:textColor="#49dc90"
-        android:textSize="15sp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="45dp"
-        android:gravity="center_horizontal"
-        android:lineSpacingExtra="-13sp"
-        android:text="이제 방금 들었던 세가지 물건 이름을 모두"
-        android:textColor="#49dc90"
-        android:textSize="15sp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -77,8 +56,10 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
         android:lineSpacingExtra="-13sp"
-        android:text="이야기 해주겠나?"
-        android:textColor="#49dc90"
-        android:textSize="15sp" />
+        android:layout_marginTop="38dp"
+
+        android:text="맞다면 확인 버튼을 눌러주개나"
+        android:textColor="#FF4F4F4F"
+        android:textSize="20sp" />
 
 </LinearLayout>

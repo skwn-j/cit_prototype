@@ -15,8 +15,6 @@
         android:id="@+id/layout_test"
         android:layout_width="match_parent"
         android:layout_height="720dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
         android:background="@color/color_training_bgr"
         android:visibility="gone">
 
@@ -25,6 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="10dp"
             android:layout_alignParentTop="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -71,13 +71,95 @@
                 android:background="@drawable/img_progress_selector" />
         </LinearLayout>
 
-        <android.support.v4.view.ViewPager
+        <com.example.minim.cit_prototype.Custom.CustomViewPager
             android:id="@+id/viewpager_traning"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/layout_progress"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:layout_marginTop="14dp" />
+
+        <LinearLayout
+            android:id="@+id/layout_voice_input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/btn_test_voice"
+            android:background="@drawable/training_bg"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <RelativeLayout
+                android:id="@+id/layout_test_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <TextView
+                    android:id="@+id/txt_test_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="STAGE 01"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/btn_test_close"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/img_close_selector" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/image_voice_bot"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="77dp"
+                    android:background="@drawable/ic_bot_1_big_n" />
+
+                <TextView
+                    android:id="@+id/textview_voice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/image_voice_bot"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="44dp"
+                    android:lineSpacingExtra="-24sp"
+                    android:text="음성 인식 중"
+                    android:textColor="#49dc90"
+                    android:textSize="26sp" />
+
+                <ImageView
+                    android:id="@+id/imageview_voice_anim"
+                    android:layout_width="72dp"
+                    android:layout_height="12dp"
+                    android:layout_below="@+id/textview_voice"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="60dp"
+                    android:background="@drawable/voice_animation" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/btn_test_voice"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        android:background="@drawable/img_mic_selector" />
 
     <RelativeLayout
         android:id="@+id/layout_training"
@@ -86,8 +168,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:background="@android:color/white"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:visibility="gone">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -182,6 +263,7 @@
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
+
         <RelativeLayout
             android:layout_width="332dp"
             android:layout_height="70dp"

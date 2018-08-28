@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
+    android:id="@+id/layout_test"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <Button
-            android:id="@+id/btn_voice"
-            android:layout_width="131dp"
-            android:layout_height="170dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="182dp"
-            android:text="Input Voice"
-            android:layout_centerHorizontal="true"></Button>
+    android:layout_height="720dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:background="@color/color_training_bgr">
 
 
 </RelativeLayout>

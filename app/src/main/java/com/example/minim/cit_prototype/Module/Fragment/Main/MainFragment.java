@@ -9,8 +9,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -29,8 +31,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.minim.cit_prototype.ChartDrawer;
+import com.example.minim.cit_prototype.Custom.CustomViewPager;
 import com.example.minim.cit_prototype.R;
 import com.example.minim.cit_prototype.User;
 import com.example.minim.cit_prototype.VoiceListener;
@@ -39,6 +43,8 @@ import com.github.bassaer.chatmessageview.view.ChatView;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -47,6 +53,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import Common.CommonEventBusObject;
 import Common.ConstVariables;
 import Common.Utils.CommonUtils;
 import Utils.PreferencesManager;
@@ -84,7 +91,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     /* Test Page*/
     private RelativeLayout mTestLayout;
-    private ViewPager mViewPager;
+    private CustomViewPager mViewPager;
     private ImageView[] mProgress;
 
     /* Training Page*/
@@ -103,6 +110,15 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     /* Selected Training Mode*/
     private int mCurrentTrainingMode;
 
+    /* Voice */
+    private PopupWindow mPopupWindow;
+    private ImageView mVoiceButton;
+    private LinearLayout mVoiceInputLayout;
+    private ImageView mVoiceAnimation;
+    private AnimationDrawable mAnimationDrawable;
+    private TextView mVoiceResultText;
+
+
     //User Mode
     private int mCurrentSelectedMode = ConstVariables.Companion.getUSER_SELECT_TRAINING();
 
@@ -118,6 +134,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
         voiceListener = new VoiceListener(getActivity());
         mCurrentAgentType = PreferencesManager.INSTANCE.loadIntegerSharedPreferences(getActivity(), ConstVariables.Companion.getPREF_KEY_AGENT_TYPE());
         initService(mCurrentAgentType);
@@ -143,15 +160,24 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     private void initializeUI(final View v, final ViewGroup container) {
         Log.d(TAG, "##### initializeUI #####");
 
         mTestLayout = v.findViewById(R.id.layout_test);
+        mVoiceInputLayout = v.findViewById(R.id.layout_voice_input);
         mViewPager = v.findViewById(R.id.viewpager_traning);
+        mViewPager.setPagingEnabled(false);
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.addOnPageChangeListener(mPagerChangeListener);
+        mVoiceButton = v.findViewById(R.id.btn_test_voice);
+        mVoiceButton.setOnClickListener(this);
+        mVoiceAnimation = v.findViewById(R.id.imageview_voice_anim);
+        mAnimationDrawable = (AnimationDrawable) mVoiceAnimation.getBackground();
 
         mProgress = new ImageView[]{
                 v.findViewById(R.id.progress_1)
@@ -215,8 +241,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         chatView.setLeftMessageTextColor(Color.BLACK);
 
         chatView.setUsernameTextColor(Color.WHITE);
-        chatView.setSendTimeTextColor(Color.WHITE);
-
         chatView.setDateSeparatorColor(Color.WHITE);
         chatView.setInputTextHint("뭐라고 할까요?");
 
@@ -249,17 +273,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 chatView.setInputText("");
             }
         });
-        // Option button is for voice recognition
-        chatView.setOnClickOptionButtonListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View vv) {
-                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, 1);
-                } else {
-                    openVoiceListener(container);
-                }
-            }
-        });
 
         chatView.setOnBubbleClickListener(new Message.OnBubbleClickListener() {
             @Override
@@ -280,13 +293,12 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private void openVoiceListener(ViewGroup container) {
         hideKeyboard(getActivity());
         View rootView = getLayoutInflater().inflate(R.layout.popup_voice, container, false);
-        final PopupWindow popupWindow = new PopupWindow(rootView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
-        popupWindow.setFocusable(true);
-        popupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
+        mPopupWindow = new PopupWindow(rootView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        mPopupWindow.setFocusable(true);
+        mPopupWindow.showAtLocation(rootView, Gravity.CENTER, 0, 0);
+        voiceListener.startListening();
 
-        //TODO: Have to fix this popup page to bigger page with images included.
-        //Voice Record Button
-        final Button voice = (Button) rootView.findViewById(R.id.btn_voice);
+       /* final Button voice = (Button) rootView.findViewById(R.id.btn_voice);
         voice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vv) {
@@ -310,7 +322,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     chatView.send(message);
                 }
             }
-        });
+        });*/
     }
 
     /*
@@ -552,6 +564,16 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 setEnableTraningPage(false);
                 setTraningFunction(mCurrentTrainingMode);
                 break;
+            case R.id.btn_test_voice:
+                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, 1);
+                } else {
+                    if (voiceListener != null) {
+                        mVoiceInputLayout.setVisibility(View.VISIBLE);
+                        mAnimationDrawable.start();
+                        voiceListener.startListening();
+                    }
+                }
         }
     }
 
@@ -588,6 +610,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             }
             closeButton = view.findViewById(R.id.btn_test_close);
             closeButton.setOnClickListener(MainFragment.this);
+            mVoiceResultText = view.findViewById(R.id.text_input_result);
             container.addView(view);
             return view;
         }
@@ -633,11 +656,17 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         Log.d(TAG, "##### setEnablePager #### flag : " + flag);
         if (flag) {
             mTestLayout.setVisibility(View.VISIBLE);
+            mVoiceInputLayout.setVisibility(View.GONE);
+            mVoiceButton.setVisibility(View.VISIBLE);
             mProgress[0].setSelected(true);
             hideKeyboard(getActivity());
         } else {
             mTestLayout.setVisibility(View.GONE);
+            mVoiceInputLayout.setVisibility(View.GONE);
+            mVoiceButton.setVisibility(View.GONE);
             mViewPager.setCurrentItem(0);
+            voiceListener.stopListening();
+            mAnimationDrawable.stop();
             int index = 0;
             for (ImageView img : mProgress) {
                 mProgress[index++].setSelected(false);
@@ -655,7 +684,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setTraningFunction(int mode) {
-        Log.d(TAG, "##### setTraningFunction mode : ##### " +  mode);
+        Log.d(TAG, "##### setTraningFunction mode : ##### " + mode);
         Bitmap clickableImage = null;
 
         if (mode == ConstVariables.Companion.getTRAINING_MODE_1()) {
@@ -681,5 +710,32 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             view = new View(activity);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    /*
+     * Send EventBus
+     * */
+    @Subscribe
+    public void onEvent(CommonEventBusObject obj) {
+        Log.d(TAG, "##### onEvent #####");
+        if (obj.getType() == ConstVariables.Companion.getEVENTBUS_INPUT_VOICE_DONE()) {
+            String result = (String) obj.getValue();
+            Log.d(TAG, "##### onEvent #####EVENTBUS_INPUT_VOICE_DONE result : " + result);
+            if (mVoiceInputLayout != null) {
+                mVoiceInputLayout.setVisibility(View.GONE);
+            }
+            if (mVoiceResultText != null) {
+                mVoiceResultText.setText(result);
+            }
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (mViewPager != null) {
+                        mViewPager.setCurrentItem(1);
+                    }
+                }
+            }, 2000);
+
+        }
     }
 }
