@@ -298,8 +298,16 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 }
                 else {
                     vv.setTooltipText("Waiting");
-                    voiceListener.stopListening();
+                    String result = voiceListener.stopListening();
                     popupWindow.dismiss();
+                    final Message message = new Message.Builder()
+                            .setUser(myAccount)
+                            .setRightMessage(true)
+                            .setMessageText(result)
+                            .hideIcon(true)
+                            .build();
+                    //Set to chat view
+                    chatView.send(message);
                 }
             }
         });
