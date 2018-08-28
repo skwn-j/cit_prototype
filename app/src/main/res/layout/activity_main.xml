@@ -19,6 +19,7 @@
             android:visibility="gone" />
 
         <ImageView
+            android:id="@+id/imageview_mozzi"
             android:layout_width="99dp"
             android:layout_height="22dp"
             android:layout_centerInParent="true"
