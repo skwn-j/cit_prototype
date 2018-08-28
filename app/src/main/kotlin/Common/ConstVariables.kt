@@ -26,5 +26,16 @@ class ConstVariables {
         * */
         val USER_SELECT_TRAINING = 200
         val USER_SELECT_TEST = 201
+
+        /*
+        * Training Mode
+        * */
+        val TRAINING_MODE_1 = 300
+        val TRAINING_MODE_2 = 301
+        val TRAINING_MODE_3 = 302
+        val TRAINING_MODE_4 = 303
+        val TRAINING_MODE_5 = 304
+        val TRAINING_MODE_6 = 305
+        val TRAINING_MODE_7 = 306
     }
 }

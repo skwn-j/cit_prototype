@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -35,15 +34,11 @@ import com.example.minim.cit_prototype.ChartDrawer;
 import com.example.minim.cit_prototype.R;
 import com.example.minim.cit_prototype.User;
 import com.example.minim.cit_prototype.VoiceListener;
-import com.github.bassaer.chatmessageview.model.ChatUser;
 import com.github.bassaer.chatmessageview.model.Message;
 import com.github.bassaer.chatmessageview.view.ChatView;
-import com.github.mikephil.charting.charts.BarChart;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,7 +47,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import Common.CommonEventBusObject;
 import Common.ConstVariables;
 import Common.Utils.CommonUtils;
 import Utils.PreferencesManager;
@@ -100,10 +94,14 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     private VoiceListener voiceListener;
 
+    /* Test, Training chat image */
     private View mTestStartView;
     private Bitmap mTestStartImage;
     private View mTrainingStartView;
     private Bitmap mTrainingStartImage;
+
+    /* Selected Training Mode*/
+    private int mCurrentTrainingMode;
 
     //User Mode
     private int mCurrentSelectedMode = ConstVariables.Companion.getUSER_SELECT_TRAINING();
@@ -123,7 +121,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         voiceListener = new VoiceListener(getActivity());
         mCurrentAgentType = PreferencesManager.INSTANCE.loadIntegerSharedPreferences(getActivity(), ConstVariables.Companion.getPREF_KEY_AGENT_TYPE());
         initService(mCurrentAgentType);
-        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -146,9 +143,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
-        }
     }
 
     private void initializeUI(final View v, final ViewGroup container) {
@@ -419,17 +413,17 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     for (int i = 0; i < sentences.length; i++) {
                         Log.d(TAG, "##### onResult ##### sentences : " + sentences[i]);
                         if (sentences[i].contains("#출발")) {
-                            Bitmap clickIcon = null;
+                            Bitmap clickableImage = null;
                             if (mCurrentSelectedMode == ConstVariables.Companion.getUSER_SELECT_TEST()) {
-                                clickIcon = mTestStartImage;
+                                clickableImage = mTestStartImage;
                             } else if (mCurrentSelectedMode == ConstVariables.Companion.getUSER_SELECT_TRAINING()) {
-                                clickIcon = mTrainingStartImage;
+                                clickableImage = mTrainingStartImage;
                             }
                             final Message receivedMessage = new Message.Builder()
                                     .setUser(citBot)
                                     .setRightMessage(false)
                                     //.setMessageText(sentences[i].substring(1))
-                                    .setPicture(clickIcon)
+                                    .setPicture(clickableImage)
                                     .setType(Message.Type.PICTURE)
                                     .setStatus(IS_CLICKABLE_MSG)
                                     .build();
@@ -445,8 +439,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
                     }
 
-                }
-                else {
+                } else {
                     try {
                         /*
                         View rootView = getView();
@@ -456,8 +449,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                         */
                         ChartDrawer chartDrawer = new ChartDrawer();
                         chartDrawer.drawBarChart(job);
-                    }
-                    catch (JSONException e){
+                    } catch (JSONException e) {
 
                     }
                 }
@@ -518,18 +510,39 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 setEnableTraningPage(false);
                 break;
             case R.id.imageview_training_1:
+                mCurrentTrainingMode = ConstVariables.Companion.getTRAINING_MODE_1();
+                setEnableTraningPage(false);
+                setTraningFunction(mCurrentTrainingMode);
                 break;
             case R.id.imageview_training_2:
+                mCurrentTrainingMode = ConstVariables.Companion.getTRAINING_MODE_2();
+                setEnableTraningPage(false);
+                setTraningFunction(mCurrentTrainingMode);
                 break;
             case R.id.imageview_training_3:
+                mCurrentTrainingMode = ConstVariables.Companion.getTRAINING_MODE_3();
+                setEnableTraningPage(false);
+                setTraningFunction(mCurrentTrainingMode);
                 break;
             case R.id.imageview_training_4:
+                mCurrentTrainingMode = ConstVariables.Companion.getTRAINING_MODE_4();
+                setEnableTraningPage(false);
+                setTraningFunction(mCurrentTrainingMode);
                 break;
             case R.id.imageview_training_5:
+                mCurrentTrainingMode = ConstVariables.Companion.getTRAINING_MODE_5();
+                setEnableTraningPage(false);
+                setTraningFunction(mCurrentTrainingMode);
                 break;
             case R.id.imageview_training_6:
+                mCurrentTrainingMode = ConstVariables.Companion.getTRAINING_MODE_6();
+                setEnableTraningPage(false);
+                setTraningFunction(mCurrentTrainingMode);
                 break;
             case R.id.imageview_training_7:
+                mCurrentTrainingMode = ConstVariables.Companion.getTRAINING_MODE_7();
+                setEnableTraningPage(false);
+                setTraningFunction(mCurrentTrainingMode);
                 break;
         }
     }
@@ -613,7 +626,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         if (flag) {
             mTestLayout.setVisibility(View.VISIBLE);
             mProgress[0].setSelected(true);
-            chatView.setEnabled(false);
             hideKeyboard(getActivity());
         } else {
             mTestLayout.setVisibility(View.GONE);
@@ -634,6 +646,26 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    private void setTraningFunction(int mode) {
+        Log.d(TAG, "##### setTraningFunction mode : ##### " +  mode);
+        Bitmap clickableImage = null;
+
+        if (mode == ConstVariables.Companion.getTRAINING_MODE_1()) {
+            clickableImage = BitmapFactory.decodeResource(getResources(), R.drawable.img_fields_1);
+        } // TBD
+        if (chatView != null) {
+            final Message receivedMessage = new Message.Builder()
+                    .setUser(citBot)
+                    .setRightMessage(false)
+                    //.setMessageText(sentences[i].substring(1))
+                    .setPicture(clickableImage)
+                    .setType(Message.Type.PICTURE)
+                    .setStatus(IS_CLICKABLE_MSG)
+                    .build();
+            chatView.receive(receivedMessage);
+        }
+    }
+
     private void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         View view = activity.getCurrentFocus();
@@ -641,26 +673,5 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             view = new View(activity);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-
-    /*
-     *
-     * */
-
-    @Subscribe
-    public void onEvent(CommonEventBusObject obj) {
-        Log.d(TAG, "##### onEvent ####");
-        if (obj.getType() == ConstVariables.Companion.getEVENTBUS_TRAINING_START()) {
-            Bitmap bitmap = (Bitmap) obj.getValue();
-            final Message receivedMessage = new Message.Builder()
-                    .setUser(citBot)
-                    .setRightMessage(false)
-                    .setPicture(bitmap)
-                    .setStatus(IS_CLICKABLE_MSG)
-                    .build();
-            if (chatView != null) {
-                chatView.receive(receivedMessage);
-            }
-        }
     }
 }

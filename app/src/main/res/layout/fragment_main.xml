@@ -14,7 +14,7 @@
     <RelativeLayout
         android:id="@+id/layout_test"
         android:layout_width="match_parent"
-        android:layout_height="700dp"
+        android:layout_height="720dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:background="@color/color_training_bgr"
@@ -82,7 +82,7 @@
     <RelativeLayout
         android:id="@+id/layout_training"
         android:layout_width="match_parent"
-        android:layout_height="700dp"
+        android:layout_height="720dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:background="@android:color/white"

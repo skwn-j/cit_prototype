@@ -1,5 +1,6 @@
 package com.example.minim.cit_prototype;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,7 +23,7 @@ import Utils.PreferencesManager;
 public class MainActivity extends AppCompatActivity {
     private final String TAG = MainActivity.class.getSimpleName();
     private View mContentView = null;
-    private ImageView mMenuButton, mMyProfileButton;
+    private ImageView mMenuButton, mMyProfileButton, mMozzi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,18 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "##### initializeUI #####");
         mMenuButton = findViewById(R.id.btn_menu);
         mMyProfileButton = findViewById(R.id.btn_myprofile);
+        mMozzi = findViewById(R.id.imageview_mozzi);
+        mMozzi.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                PreferencesManager.INSTANCE.clearPreference(MainActivity.this);
+                finish();
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                startActivity(intent);
+
+                return false;
+            }
+        });
 
         handleFragment(PreferencesManager.INSTANCE.loadIntegerSharedPreferences(this, ConstVariables.Companion.getPREF_KEY_AGENT_TYPE()));
     }
