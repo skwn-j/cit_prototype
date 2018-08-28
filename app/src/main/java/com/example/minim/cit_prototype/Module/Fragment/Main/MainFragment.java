@@ -258,7 +258,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         // Option button is for voice recognition
         chatView.setOnClickOptionButtonListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View vv) {
                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, 1);
                 } else {
@@ -284,6 +284,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private void openVoiceListener(ViewGroup container) {
+        hideKeyboard(getActivity());
         View rootView = getLayoutInflater().inflate(R.layout.popup_voice, container, false);
         final PopupWindow popupWindow = new PopupWindow(rootView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
         popupWindow.setFocusable(true);
@@ -291,32 +292,20 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         //TODO: Have to fix this popup page to bigger page with images included.
         //Voice Record Button
-        Button voice = (Button) rootView.findViewById(R.id.btn_voice);
+        final Button voice = (Button) rootView.findViewById(R.id.btn_voice);
         voice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vv) {
                 //start listening
-                voiceListener.startListening();
-            }
-        });
-        //close button
-        Button close = (Button) rootView.findViewById(R.id.btn_test_close);
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View vv) {
-                //Stop listening and get result;
-                String input = voiceListener.stopListening();
-                popupWindow.dismiss();
-                if (input != null) {
-                    //Show message on chatview
-                    final Message message = new Message.Builder()
-                            .setUser(myAccount)
-                            .setRightMessage(true)
-                            .setMessageText(input)
-                            .hideIcon(true)
-                            .build();
-                    //Set to chat view
-                    chatView.send(message);
+                if(!vv.isSelected()) {
+                    vv.setSelected(true);
+                    vv.setTooltipText("Listening");
+                    voiceListener.startListening();
+                }
+                else {
+                    vv.setTooltipText("Waiting");
+                    voiceListener.stopListening();
+                    popupWindow.dismiss();
                 }
             }
         });
