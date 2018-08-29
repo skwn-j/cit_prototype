@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="STAGE 01"
+            android:text="STAGE 02"
             android:textColor="@color/colorPrimary"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -54,20 +54,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="38dp"
         android:gravity="center_horizontal"
         android:lineSpacingExtra="-13sp"
-        android:layout_marginTop="38dp"
-
         android:text="맞다면 확인 버튼을 눌러주개나"
         android:textColor="#FF4F4F4F"
         android:textSize="20sp" />
-    <Button
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp">
+
+        <ImageView
+            android:id="@+id/imageview_input_voice"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="160dp"
+            android:background="@drawable/img_ok_selector" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/imageview_input_voice"
+            android:layout_alignEnd="@+id/imageview_input_voice"
+            android:layout_alignStart="@+id/imageview_input_voice"
+            android:layout_alignTop="@+id/imageview_input_voice"
+            android:layout_centerInParent="true"
+            android:gravity="center"
             android:text="확인"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@+id/confirm"/>
-    <Button
-            android:text="다시 시도"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@+id/retry"/>
+            android:textColor="#FFFFFFFF"
+            android:textSize="22sp" />
+    </RelativeLayout>
+
 
 </LinearLayout>

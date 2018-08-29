@@ -12,4 +12,7 @@
     <!-- Chat -->
     <color name="color_chat_ai">#FFFFFFFF</color>
     <color name="color_chat_user">#FF49CD90</color>
+
+    <color name="color_btn_p">#216140</color>
+    <color name="color_btn_n">#FF49DC90</color>
 </resources>

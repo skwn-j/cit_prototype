@@ -1,37 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".AgentDialog">
+    android:layout_height="match_parent">
 
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="131dp"
-        android:layout_height="170dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="42dp"
-        android:layout_marginTop="180dp"
-        android:text="Button" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="127dp"
-        android:layout_height="166dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/button1"
-        android:layout_marginEnd="41dp"
-        android:text="Button" />
-
-    <Button
-        android:id="@+id/cancel_action"
+    <TextView
+        android:id="@+id/textview_dialog"
         android:layout_width="wrap_content"
-        android:layout_height="58dp"
-        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="60dp"
-        android:text="Button" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="38dp"
+        android:lineSpacingExtra="-24sp"
+        android:text="검사 결과"
+        android:textColor="#49dc90"
+        android:textSize="30sp" />
+
+    <ImageView
+        android:id="@+id/close_dialog"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/img_close_selector" />
+
+    <ImageView
+        android:id="@+id/image_dialog"
+        android:layout_width="330dp"
+        android:layout_height="235dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/img_grahph" />
 </RelativeLayout>

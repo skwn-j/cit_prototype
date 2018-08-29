@@ -21,4 +21,10 @@
     </string>
 
     <string name="string_training_start">자네는 오늘 하루 안에 2회\n트레이닝이 가능하다네\n가장 해보고 싶은 트레이닝을\n선택하도록 하게!</string>
+
+    <string name="string_training_graph">친구, 지금까지 내 긴 질문들을 받아줘서\n고맙다네. 나의 기억력과 집즁력이\n얼마나 살아났는지 한번 확인을\n해보겠네.</string>
+    <string name="string_training_step_1">우리 같이 보고 기억력을 되살려\n이야기를 나눠보세.\n분명 기억력에 도움이 많이 될걸세!"</string>
+    <string name="string_training_step_2">경치가 아주 좋구먼\n이 사진은 언제 찍은 것인가?"</string>
+
+    <string name="string_elite_step1">세상에...\n자네 기억력이 엘리트 급일세</string>
 </resources>

@@ -26,7 +26,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -56,6 +55,7 @@ import java.util.Map;
 import Common.CommonEventBusObject;
 import Common.ConstVariables;
 import Common.Utils.CommonUtils;
+import Dialog.CommonDialog;
 import Utils.PreferencesManager;
 import ai.api.AIServiceException;
 import ai.api.RequestExtras;
@@ -77,6 +77,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     final String CHILD_TOKEN = "fdf9f71121544dbf8693b645623f2aff";
 
     private final int IS_CLICKABLE_MSG = 300;
+    private final int IS_GRAPH_VIEW = 301;
 
     //For Dialogflow
     private Gson gson = GsonFactory.getGson();
@@ -106,6 +107,10 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private Bitmap mTestStartImage;
     private View mTrainingStartView;
     private Bitmap mTrainingStartImage;
+    private View mGraphView;
+    private Bitmap mGraphStartImage;
+    private View mStampView;
+    private Bitmap mStampViewImage;
 
     /* Selected Training Mode*/
     private int mCurrentTrainingMode;
@@ -117,6 +122,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private ImageView mVoiceAnimation;
     private AnimationDrawable mAnimationDrawable;
     private TextView mVoiceResultText;
+    private ImageView mConfirmButton;
 
 
     //User Mode
@@ -145,6 +151,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
         mTestStartView = inflater.inflate(R.layout.layout_test_start, container, false);
         mTrainingStartView = inflater.inflate(R.layout.layout_training_start, container, false);
+        mGraphView = inflater.inflate(R.layout.layout_graph_start, container, false);
+        mStampView = inflater.inflate(R.layout.layout_stamp_start, container, false);
         initializeUI(view, container);
         return view;
     }
@@ -155,6 +163,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         mTestStartImage = CommonUtils.Companion.viewToBitmap(getActivity(), mTestStartView
                 .findViewById(R.id.layout_test_start));
         mTrainingStartImage = CommonUtils.Companion.viewToBitmap(getActivity(), mTrainingStartView.findViewById(R.id.layout_traiining_start));
+        mGraphStartImage = CommonUtils.Companion.viewToBitmap(getActivity(), mGraphView.findViewById(R.id.layout_graph_starts));
+        mStampViewImage = CommonUtils.Companion.viewToBitmap(getActivity(), mStampView.findViewById(R.id.layout_test_start));
     }
 
     @Override
@@ -178,6 +188,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         mVoiceButton.setOnClickListener(this);
         mVoiceAnimation = v.findViewById(R.id.imageview_voice_anim);
         mAnimationDrawable = (AnimationDrawable) mVoiceAnimation.getBackground();
+
 
         mProgress = new ImageView[]{
                 v.findViewById(R.id.progress_1)
@@ -268,7 +279,12 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                         .build();
                 //Set to chat view
                 chatView.send(message);
-                sendRequest(chatView.getInputText());
+                if(chatView.getInputText().equals("제주도야")){
+                    makeChat(null, true, mStampViewImage, -1);
+                    makeChat("정말 고맙네 자네, 다른 트레이닝도 더 받아보겠나?", false, null, -1);
+                }else{
+                    sendRequest(chatView.getInputText());
+                }
                 //Reset edit text
                 chatView.setInputText("");
             }
@@ -283,6 +299,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     } else if (mCurrentSelectedMode == ConstVariables.Companion.getUSER_SELECT_TRAINING()) {
                         setEnableTraningPage(true);
                     }
+                } else if (message.getStatus() == IS_GRAPH_VIEW) {
+                    CommonDialog dialog = new CommonDialog();
+                    dialog.show(getFragmentManager(), this.getClass().getSimpleName());
                 } else {
                     return;
                 }
@@ -574,6 +593,11 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                         voiceListener.startListening();
                     }
                 }
+                break;
+            case R.id.imageview_input_voice:
+                setEnableTestPage(false);
+                makeChat(null, true, mGraphStartImage, IS_GRAPH_VIEW);
+                break;
         }
     }
 
@@ -594,6 +618,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     break;
                 case 1:
                     view = layoutInflater.inflate(R.layout.layout_pager_test_step_2, container, false);
+                    mConfirmButton = view.findViewById(R.id.imageview_input_voice);
+                    mConfirmButton.setOnClickListener(MainFragment.this);
                     break;
                 case 2:
                     view = layoutInflater.inflate(R.layout.layout_pager_test_step_3, container, false);
@@ -674,6 +700,32 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    private void makeChat(String string, boolean isClickable, Bitmap bitmap, int status) {
+        Log.d(TAG, "##### makeChat #####");
+        if (isClickable) {
+            final Message receivedMessage = new Message.Builder()
+                    .setUser(citBot)
+                    .setRightMessage(false)
+                    .setPicture(bitmap)
+                    .setType(Message.Type.PICTURE)
+                    .setStatus(status)
+                    .build();
+            if (chatView != null) {
+                chatView.receive(receivedMessage);
+            }
+        } else {
+            final Message receivedMessage = new Message.Builder()
+                    .setUser(citBot)
+                    .setRightMessage(false)
+                    .setMessageText(string.toString())
+                    .build();
+            if (chatView != null) {
+                chatView.receive(receivedMessage);
+            }
+
+        }
+    }
+
     private void setEnableTraningPage(boolean flag) {
         Log.d(TAG, "##### setEnableTraningPage #####");
         if (flag) {
@@ -690,6 +742,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         if (mode == ConstVariables.Companion.getTRAINING_MODE_1()) {
             clickableImage = BitmapFactory.decodeResource(getResources(), R.drawable.img_fields_1);
         } // TBD
+        makeChat(getResources().getString(R.string.string_training_step_1), false, null, -1);
         if (chatView != null) {
             final Message receivedMessage = new Message.Builder()
                     .setUser(citBot)
@@ -701,6 +754,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     .build();
             chatView.receive(receivedMessage);
         }
+        makeChat(getResources().getString(R.string.string_training_step_2), false, null, -1);
     }
 
     private void hideKeyboard(Activity activity) {
