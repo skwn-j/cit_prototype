@@ -44,7 +44,7 @@
             android:lineSpacingExtra="13sp"
             android:text="@string/string_elite_step1"
             android:textColor="#4f4f4f"
-            android:layout_marginTop="30dp"
+            android:layout_margin="30dp"
             android:textSize="25sp" />
     </RelativeLayout>
 </RelativeLayout>
