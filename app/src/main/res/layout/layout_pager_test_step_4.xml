@@ -1,84 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/popup_voice"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/training_bg"
-    android:orientation="vertical">
+              android:id="@+id/popup_voice"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/training_bg"
+              android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/layout_test_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            android:id="@+id/layout_test_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/txt_test_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="STAGE 04"
-            android:textColor="@color/colorPrimary"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+                android:id="@+id/txt_test_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="STAGE 03"
+                android:textColor="@color/colorPrimary"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/btn_test_close"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignParentEnd="true"
-            android:background="@drawable/img_close_selector" />
+                android:id="@+id/btn_test_close"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/img_close_selector" />
     </RelativeLayout>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="45dp"
-        android:gravity="center_horizontal"
-        android:lineSpacingExtra="8dp"
-        android:text="@string/string_test_step_1"
-        android:textColor="#FF4F4F4F"
-        android:textSize="15sp" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="45dp"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="8dp"
+            android:text="@string/string_test_step_4"
+            android:textColor="#FF4F4F4F"
+            android:textSize="15sp" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="38dp"
-        android:lineSpacingExtra="-24sp"
-        android:text="나무 자동차 모자"
-        android:textColor="#49dc90"
-        android:textSize="26sp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:gravity="center_horizontal"
-        android:lineSpacingExtra="-13sp"
-        android:text="음성으로만 제공"
-        android:textColor="#49dc90"
-        android:textSize="15sp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="45dp"
-        android:gravity="center_horizontal"
-        android:lineSpacingExtra="-13sp"
-        android:text="이제 방금 들었던 세가지 물건 이름을 모두"
-        android:textColor="#49dc90"
-        android:textSize="15sp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:lineSpacingExtra="-13sp"
-        android:text="이야기 해주겠나?"
-        android:textColor="#49dc90"
-        android:textSize="15sp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="-13sp"
+            android:text="숫자패드로 제공"
+            android:textColor="#49dc90"
+            android:textSize="15sp" />
 
 </LinearLayout>

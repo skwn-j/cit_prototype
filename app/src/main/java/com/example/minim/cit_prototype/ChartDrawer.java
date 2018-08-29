@@ -29,15 +29,20 @@ public class ChartDrawer {
         Iterator<String> keys = info.keys();
         ArrayList<String> labels = new ArrayList<>();
         ArrayList<BarEntry> entries = new ArrayList<>();
+        //add korean labels
+        labels.add("지남");
+        labels.add("기억");
+        labels.add("주의");
+        labels.add("언어");
+        labels.add("구성");
+        labels.add("판단");
+        //add scores to entries
         for(int i=1; keys.hasNext(); i++) {
             String key = keys.next();
-            labels.add(key);
             entries.add(new BarEntry(i, info.getInt(key), key));
         }
         BarDataSet barDataSet = new BarDataSet(entries, "scores");
         BarData barData = new BarData(barDataSet);
         barChart.setData(barData);
-
     }
-
 }
