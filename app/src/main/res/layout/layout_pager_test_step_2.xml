@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="STAGE 02"
+            android:text="STAGE 01"
             android:textColor="@color/colorPrimary"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -61,5 +61,13 @@
         android:text="맞다면 확인 버튼을 눌러주개나"
         android:textColor="#FF4F4F4F"
         android:textSize="20sp" />
+    <Button
+            android:text="확인"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/confirm"/>
+    <Button
+            android:text="다시 시도"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/retry"/>
 
 </LinearLayout>
