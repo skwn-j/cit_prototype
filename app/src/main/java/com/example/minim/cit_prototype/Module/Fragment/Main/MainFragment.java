@@ -55,7 +55,7 @@ import java.util.Map;
 import Common.CommonEventBusObject;
 import Common.ConstVariables;
 import Common.Utils.CommonUtils;
-import Dialog.CommonDialog;
+import Dialog.GraphDialog;
 import Dialog.TrainingDialog;
 import Utils.PreferencesManager;
 import ai.api.AIServiceException;
@@ -277,7 +277,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                         setEnableTraningPage(true);
                     }
                 } else if (message.getStatus() == IS_GRAPH_VIEW) {
-                    CommonDialog dialog = new CommonDialog();
+                    GraphDialog dialog = new GraphDialog();
                     dialog.show(getFragmentManager(), this.getClass().getSimpleName());
                 } else {
                     return;

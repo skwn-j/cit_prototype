@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="400dp"
+    android:minHeight="350dp"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textview_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="38dp"
+            android:lineSpacingExtra="-24sp"
+            android:text="검사 결과"
+            android:textColor="#49dc90"
+            android:textSize="30sp" />
+
+        <ImageView
+            android:id="@+id/close_dialog"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/img_close_selector" />
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/image_dialog"
+        android:layout_width="330dp"
+        android:layout_height="235dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/img_grahph" />
+</LinearLayout>
