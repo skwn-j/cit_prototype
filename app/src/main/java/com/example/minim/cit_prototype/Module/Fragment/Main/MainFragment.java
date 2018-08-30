@@ -56,6 +56,7 @@ import Common.CommonEventBusObject;
 import Common.ConstVariables;
 import Common.Utils.CommonUtils;
 import Dialog.CommonDialog;
+import Dialog.TrainingDialog;
 import Utils.PreferencesManager;
 import ai.api.AIServiceException;
 import ai.api.RequestExtras;
@@ -94,11 +95,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout mTestLayout;
     private CustomViewPager mViewPager;
     private ImageView[] mProgress;
-
-    /* Training Page*/
-    private RelativeLayout mTrainingLayout;
-    private ImageView[] mCard;
-    private ImageView mCloseButton;
 
     private VoiceListener voiceListener;
 
@@ -200,25 +196,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         };
         mProgress[0].setSelected(true);
 
-        mCard = new ImageView[]{
-                v.findViewById(R.id.imageview_training_1)
-                , v.findViewById(R.id.imageview_training_2)
-                , v.findViewById(R.id.imageview_training_3)
-                , v.findViewById(R.id.imageview_training_4)
-                , v.findViewById(R.id.imageview_training_5)
-                , v.findViewById(R.id.imageview_training_6)
-                , v.findViewById(R.id.imageview_training_7)
-        };
-        mCloseButton = v.findViewById(R.id.btn_training_close);
-        mCloseButton.setOnClickListener(MainFragment.this);
-
-        int i = 0;
-        for (ImageView image : mCard) {
-            mCard[i++].setOnClickListener(this);
-        }
-
-        mTrainingLayout = v.findViewById(R.id.layout_training);
-
         int myId = 0;
         Bitmap usrIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_user);
         String myName = "Fish";
@@ -279,10 +256,10 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                         .build();
                 //Set to chat view
                 chatView.send(message);
-                if(chatView.getInputText().equals("제주도야")){
-                    makeChat(null, true, mStampViewImage, -1);
-                    makeChat("정말 고맙네 자네, 다른 트레이닝도 더 받아보겠나?", false, null, -1);
-                }else{
+                if (chatView.getInputText().equals("제주도야")) {
+                    //makeChat(null, true, mStampViewImage, -1);
+                    //makeChat("정말 고맙네 자네, 다른 트레이닝도 더 받아보겠나?", false, null, -1);
+                } else {
                     sendRequest(chatView.getInputText());
                 }
                 //Reset edit text
@@ -467,6 +444,27 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                                     .setStatus(IS_CLICKABLE_MSG)
                                     .build();
                             chatView.receive(receivedMessage);
+                        } else if (sentences[i].contains("#trainingupload")) {
+                            Bitmap clickableImage = BitmapFactory.decodeResource(getResources(), R.drawable.training_pic);
+                            final Message receivedMessage = new Message.Builder()
+                                    .setUser(citBot)
+                                    .setRightMessage(false)
+                                    //.setMessageText(sentences[i].substring(1))
+                                    .setPicture(clickableImage)
+                                    .setType(Message.Type.PICTURE)
+                                    .build();
+                            chatView.receive(receivedMessage);
+                            sendRequest("training upload");
+
+                        } else if (sentences[i].contains("#스탬프")) {
+                            final Message receivedMessage = new Message.Builder()
+                                    .setUser(citBot)
+                                    .setRightMessage(false)
+                                    //.setMessageText(sentences[i].substring(1))
+                                    .setPicture(mStampViewImage)
+                                    .setType(Message.Type.PICTURE)
+                                    .build();
+                            chatView.receive(receivedMessage);
                         } else {
                             final Message receivedMessage = new Message.Builder()
                                     .setUser(citBot)
@@ -544,44 +542,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.btn_test_close:
                 setEnableTestPage(false);
-                break;
-            case R.id.btn_training_close:
-                setEnableTraningPage(false);
-                break;
-            case R.id.imageview_training_1:
-                mCurrentTrainingMode = ConstVariables.Companion.getTRAINING_MODE_1();
-                setEnableTraningPage(false);
-                setTraningFunction(mCurrentTrainingMode);
-                break;
-            case R.id.imageview_training_2:
-                mCurrentTrainingMode = ConstVariables.Companion.getTRAINING_MODE_2();
-                setEnableTraningPage(false);
-                setTraningFunction(mCurrentTrainingMode);
-                break;
-            case R.id.imageview_training_3:
-                mCurrentTrainingMode = ConstVariables.Companion.getTRAINING_MODE_3();
-                setEnableTraningPage(false);
-                setTraningFunction(mCurrentTrainingMode);
-                break;
-            case R.id.imageview_training_4:
-                mCurrentTrainingMode = ConstVariables.Companion.getTRAINING_MODE_4();
-                setEnableTraningPage(false);
-                setTraningFunction(mCurrentTrainingMode);
-                break;
-            case R.id.imageview_training_5:
-                mCurrentTrainingMode = ConstVariables.Companion.getTRAINING_MODE_5();
-                setEnableTraningPage(false);
-                setTraningFunction(mCurrentTrainingMode);
-                break;
-            case R.id.imageview_training_6:
-                mCurrentTrainingMode = ConstVariables.Companion.getTRAINING_MODE_6();
-                setEnableTraningPage(false);
-                setTraningFunction(mCurrentTrainingMode);
-                break;
-            case R.id.imageview_training_7:
-                mCurrentTrainingMode = ConstVariables.Companion.getTRAINING_MODE_7();
-                setEnableTraningPage(false);
-                setTraningFunction(mCurrentTrainingMode);
                 break;
             case R.id.btn_test_voice:
                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -729,15 +689,15 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private void setEnableTraningPage(boolean flag) {
         Log.d(TAG, "##### setEnableTraningPage #####");
         if (flag) {
-            mTrainingLayout.setVisibility(View.VISIBLE);
-        } else {
-            mTrainingLayout.setVisibility(View.GONE);
+            TrainingDialog dialog = new TrainingDialog();
+            dialog.show(getFragmentManager(), this.getClass().getSimpleName());
         }
     }
 
-    private void setTraningFunction(int mode) {
-        Log.d(TAG, "##### setTraningFunction mode : ##### " + mode);
-        Bitmap clickableImage = null;
+    private void setTraningFunction() {
+        Log.d(TAG, "##### setTraningFunction mode : ##### ");
+        sendRequest("트레이닝 선택");
+       /* Bitmap clickableImage = null;
 
         if (mode == ConstVariables.Companion.getTRAINING_MODE_1()) {
             clickableImage = BitmapFactory.decodeResource(getResources(), R.drawable.img_fields_1);
@@ -754,7 +714,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     .build();
             chatView.receive(receivedMessage);
         }
-        makeChat(getResources().getString(R.string.string_training_step_2), false, null, -1);
+        makeChat(getResources().getString(R.string.string_training_step_2), false, null, -1);*/
+
     }
 
     private void hideKeyboard(Activity activity) {
@@ -790,6 +751,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 }
             }, 2000);
 
+        } else if (obj.getType() == ConstVariables.Companion.getEVENTBUS_TRAINING_START()) {
+            setTraningFunction();
         }
     }
 }
